@@ -23,14 +23,16 @@ function Loginbody(){
             body:JSON.stringify(credentials),
         });
 
-        if(response.status===200){
-            
-              
-                
-             router.refresh();
-             router.push('/Consent');
-        }
+        if (response.status === 200) {
+           
+            const authData = await response.json();
+        
+            // Save the authentication data to localStorage
+            localStorage.setItem('authData', JSON.stringify(authData));
+            router.refresh();
+            router.push('/');
 
+        }
 
 
         else{

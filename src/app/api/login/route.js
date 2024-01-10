@@ -50,7 +50,7 @@ export async function POST(request) {
       })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
-        .setExpirationTime('30s')
+        .setExpirationTime('1d')
         .sign(getJwtSecretKey());
 
       // Set the token as a cookie
@@ -64,6 +64,8 @@ export async function POST(request) {
         path: '/',
       });
 
+      // Notify all tabs that the user has logged in
+      
       console.log('Patient Verified Successfully');
       return response;
     } else {
@@ -77,6 +79,10 @@ export async function POST(request) {
   }
 }
 
+function notifyTabs(message) {
+  const broadcastChannel = new BroadcastChannel('auth');
+  broadcastChannel.postMessage(message);
+}
 
 
 // async function subscribeToStream(streamName , multichainConfig) {
