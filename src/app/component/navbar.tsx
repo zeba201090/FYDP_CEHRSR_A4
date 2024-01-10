@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 function Navbar() {
   const auth = useAuth();
+  console.log(JSON.stringify(auth.username));
 
   return (
     <div>
@@ -26,7 +27,11 @@ function Navbar() {
         {auth ? (
           // Render content for logged-in users
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-            <Link href="/WelcomePatient">User Dashboard</Link>
+           <Link href={`/WelcomePatient/${encodeURIComponent(JSON.stringify(auth.username))}`}>
+  User Dashboard - {JSON.stringify(auth.username)}
+</Link>
+
+
           </button>
         ) : (
           // Render the login/registration button for non-logged-in users

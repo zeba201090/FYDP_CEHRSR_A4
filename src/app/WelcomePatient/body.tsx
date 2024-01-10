@@ -1,11 +1,15 @@
+"use client";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
-export default function WelcomeDoctor() {
+export default function WelcomePatient() {
+  const auth = useAuth();
   return (
     <main className="flex flex-col justify-center items-center">
       <h1 className="text-3xl font-bold text-center border-b-4 border-blue-800 mt-10 mb-5">
-        Welcome Patient X
+        Welcome Patient {JSON.stringify(auth.username)}
       </h1>
       <div className="flex items-center justify-center">
         <button className="flex flex-col items-center justify-center w-500 h-500 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200">
