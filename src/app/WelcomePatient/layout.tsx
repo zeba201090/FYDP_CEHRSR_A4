@@ -1,15 +1,15 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
-import Navbar from './component/navbar'
-import Footer from './component/footer'
+import Navbar from '../component/navbar2'
+
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'CEHSRS',
 }
 
-export default function RootLayout({
+export default function WelcomePatientLayout({
   children,
 }: {
   children: React.ReactNode
@@ -17,8 +17,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
         {children}
+        
       </body>
     </html>
   )

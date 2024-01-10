@@ -1,4 +1,4 @@
-import Main from './body'
+import Main  from './body'
 
 export default function Form(){
     return(
