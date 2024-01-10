@@ -5,7 +5,6 @@ import Link from 'next/link';
 
 function Navbar() {
   const auth = useAuth();
-  console.log(JSON.stringify(auth.username));
 
   return (
     <div>

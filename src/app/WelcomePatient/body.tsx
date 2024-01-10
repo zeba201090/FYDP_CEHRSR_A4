@@ -2,10 +2,17 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { useAuth } from "@/hooks/useAuth";
+import { Router } from "next/router";
 
 export default function WelcomePatient() {
+  const router = useRouter();
   const auth = useAuth();
+  
+  if (!auth) return router.push("/login"), (<p>Redirecting...</p>);
+
   return (
     <main className="flex flex-col justify-center items-center">
       <h1 className="text-3xl font-bold text-center border-b-4 border-blue-800 mt-10 mb-5">
