@@ -72,7 +72,8 @@ async function subscribeToStream(streamName , multichainConfig) {
     throw new Error(`HTTP error subscribing to stream! Status: ${subscribeResponse.status}`);
   }
   else {
-    console.log("Login successful");
+    console.log("subscribed to stream");
+    
 
   }
 }

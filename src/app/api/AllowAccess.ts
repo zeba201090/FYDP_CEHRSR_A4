@@ -27,6 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!subscribeResponse.ok) {
             throw new Error(`HTTP error subscribing to stream! Status: ${subscribeResponse.status}`);
         }
-        res.status(201).send();
+        console.log("Subscribed to stream");
+
+        res.status(201);
     }
 }

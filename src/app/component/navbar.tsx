@@ -1,5 +1,6 @@
 import ProjectLogo from 'next/image'
 
+
 function Navbar(){
     return (
         <div>
