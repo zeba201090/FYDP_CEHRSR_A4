@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function Home() {
   const auth = useAuth();
-  console.log(auth);
+  
   return <> 
            <h1>Public Home Page</h1>
                 {auth ? (

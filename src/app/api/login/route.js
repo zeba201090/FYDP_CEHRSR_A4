@@ -40,17 +40,21 @@ export async function POST(request) {
     );
 
     const chain_response = response.data;
+    console.log('chain_response', chain_response);
     const chain_nid = JSON.stringify(chain_response.result[0]?.data?.json?.nid).replace(/^"|"$/g, '');
     const chain_password = JSON.stringify(chain_response.result[0]?.data?.json?.password).replace(/^"|"$/g, '');
+    
+
 
     if (chain_nid === form_nid && chain_password === form_password) {
       // Patient verified successfully, generate JWT token
       const token = await new SignJWT({
         username: form_nid,
+        
       })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
-        .setExpirationTime('1d')
+        .setExpirationTime('6000s')
         .sign(getJwtSecretKey());
 
       // Set the token as a cookie
@@ -64,7 +68,6 @@ export async function POST(request) {
         path: '/',
       });
 
-      // Notify all tabs that the user has logged in
       
       console.log('Patient Verified Successfully');
       return response;
@@ -79,10 +82,7 @@ export async function POST(request) {
   }
 }
 
-function notifyTabs(message) {
-  const broadcastChannel = new BroadcastChannel('auth');
-  broadcastChannel.postMessage(message);
-}
+
 
 
 // async function subscribeToStream(streamName , multichainConfig) {
