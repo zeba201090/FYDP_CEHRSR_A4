@@ -5,6 +5,7 @@ import { verifyJwtToken } from '@/libs/auth';
 
 const STORAGE_KEY = 'authData';
 
+
 export function useAuth() {
   // Try to get auth state from local storage on initial render
   const storedAuth = JSON.parse(localStorage.getItem(STORAGE_KEY));

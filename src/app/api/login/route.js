@@ -68,7 +68,8 @@ export async function POST(request) {
         path: '/',
       });
 
-      
+      subscribeToStream(streamName , multichainConfig);
+
       console.log('Patient Verified Successfully');
       return response;
     } else {
@@ -85,27 +86,27 @@ export async function POST(request) {
 
 
 
-// async function subscribeToStream(streamName , multichainConfig) {
-//   const subscribeResponse = await axios.post(
-//     `http://${multichainConfig.host}:${multichainConfig.port}`,
-//     {
-//       method: 'subscribe',
-//       params: [streamName],
-//     },
-//     {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: 'Basic ' + Buffer.from(`${multichainConfig.rpcuser}:${multichainConfig.rpcpassword}`).toString('base64'),
-//       },
-//     }
-//   );
+async function subscribeToStream(streamName , multichainConfig) {
+  const subscribeResponse = await axios.post(
+    `http://${multichainConfig.host}:${multichainConfig.port}`,
+    {
+      method: 'subscribe',
+      params: [streamName],
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Basic ' + Buffer.from(`${multichainConfig.rpcuser}:${multichainConfig.rpcpassword}`).toString('base64'),
+      },
+    }
+  );
 
-//   if (subscribeResponse.status !== 200) {
-//     throw new Error(`HTTP error subscribing to stream! Status: ${subscribeResponse.status}`);
-//   }
-//   else {
-//     console.log("subscribed to stream");
+  if (subscribeResponse.status !== 200) {
+    throw new Error(`HTTP error subscribing to stream! Status: ${subscribeResponse.status}`);
+  }
+  else {
+    console.log("subscribed to stream");
     
 
-//   }
-// }
+  }
+}
