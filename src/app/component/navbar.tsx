@@ -29,11 +29,11 @@ import { User } from '../user'
           
           // Render content for logged-in users
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-           <Link href={`/WelcomePatient/${encodeURIComponent(JSON.stringify(session))}`}>
-  User Dashboard - {JSON.stringify(session)}
-</Link>
+           <Link href={`/WelcomePatient`}>
+              Dashboard - {(session?.user?.name)}
+            </Link>
           
-<LogoutButton />
+
           </button>
           
         ) : (
@@ -42,6 +42,7 @@ import { User } from '../user'
             <a href="/login">Login / Registration</a>
           </button>
         )}
+        {session ? (<LogoutButton />) :null}
       </header>
     </div>
   );

@@ -31,7 +31,7 @@ function Loginbody() {
     
       console.log(result);
       router.refresh();
-      router.push('/');
+      router.push('/WelcomeDoctor');
       router.refresh();
 
     }

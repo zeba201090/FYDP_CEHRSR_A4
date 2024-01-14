@@ -38,11 +38,13 @@ export async function patientAuthProvider(credentials) {
     const chain_response = response.data;
     const chain_nid = JSON.stringify(chain_response.result[0]?.data?.json?.nid).replace(/^"|"$/g, '');
     const chain_password = JSON.stringify(chain_response.result[0]?.data?.json?.password).replace(/^"|"$/g, '');
+    const chain_firstname = JSON.stringify(chain_response.result[0]?.data?.json?.firstName).replace(/^"|"$/g, '');
+
 
     if (chain_nid === national_id && chain_password === password) {
       
 
-      return Promise.resolve({ id: national_id, name: national_id });
+      return Promise.resolve({ id: national_id, name: chain_firstname });
     } else {
       // Authentication failed
       return Promise.resolve(null);

@@ -3,20 +3,21 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-import { useAuth } from "@/hooks/useAuth";
 import { Router } from "next/router";
 
-export default function WelcomePatient() {
+export default async function WelcomePatient() {
   const router = useRouter();
-  const auth = useAuth();
-  
-  if (!auth) return router.push("/login"), (<p>Redirecting...</p>);
+ 
+  const session = await getServerSession(authOptions) || null;
+
 
   return (
     <main className="flex flex-col justify-center items-center">
       <h1 className="text-3xl font-bold text-center border-b-4 border-blue-800 mt-10 mb-5">
-        Welcome Patient {JSON.stringify(auth.username)}
+        Welcome {(session?.user?.name)}
       </h1>
       <div className="flex items-center justify-center">
         <button className="flex flex-col items-center justify-center w-500 h-500 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200">

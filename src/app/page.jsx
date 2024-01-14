@@ -5,7 +5,6 @@ import { User } from './user'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
-  const {user} = session;
   return (
     <main>
       <LoginButton />
@@ -13,8 +12,7 @@ export default async function Home() {
       
       <h2>Server Session</h2>
       <pre>{JSON.stringify(session)}</pre>
-      {/* <pre> {user.name} </pre> */}
-      
+      <LogoutButton />      
       <h2>Client Call</h2>
       <User />
     </main>
