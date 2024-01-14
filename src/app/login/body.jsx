@@ -1,56 +1,56 @@
 "use client"
 
 import React from 'react';
+import { signIn } from 'next-auth/react';
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-function Loginbody(){
-    const router = useRouter();
-    const [nid, setNid] = useState('');
-    const [password, setPassword] = useState('');
+
+function Loginbody() {
+
     
+    const router = useRouter();
+    const [login, setLogin] = useState(false);
+    const [national_id, setNational_id] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(false);
 
-    const [Error,setError]=useState(false);
+    const submit = async (e) => {
+      e.preventDefault();
+      const result =  signIn('credentials', {
 
-    const submit=async (e)=>{
-        e.preventDefault();
+        national_id: national_id,
+        password: password,
+        type: "patient",
+        redirect: false,
 
-        const credentials={nid,password};
-
-        const response=await fetch('/api/login',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(credentials),
-        });
-
-        if (response.status === 200) {
-           
-            const authData = await response.json();
-        
-            // Save the authentication data to localStorage
-            localStorage.setItem('authData', JSON.stringify(authData));
-            router.refresh();
-            router.push('/');
-
-        }
-
-
-        else{
-            setError(true);
-            return;
-        }
-    }
-
+      });
+  
+      if (result?.error) {
+          console.log(result.error);
+        setError(true);
+      } else {
+      
+        console.log(result);
+        router.push('/');
+      }
+    };
 
   return (
     <main>
+      <button onClick={() => setLogin(true)}>Login</button>
+      <button onClick={() => setLogin(false)}>Logout</button>
+      {login ? (<p> signin</p> ) : ( <p> login </p> )}
+
+      
         <div className="w-1/2 border-blue-700 border-2 rounded-md mx-auto my-20">
             <div className="flex items-center justify-center py-10 flex-col">
             <form className="py-10 flex-col" onSubmit={submit}>
                 <div className="mb-4">
-                    <label htmlFor="nid" className="text-sm text-black float-left w-32">National ID</label>
+                    <label htmlFor="national_id" className="text-sm text-black float-left w-32">National ID</label>
                     <input type="text" className="border border-blue-700 rounded p-1 text-sm flex-1" required 
-                        value={nid} onChange={(e) => setNid(e.target.value)}/>
+                        value={national_id} onChange={(e) => setNational_id(e.target.value)}/>
                 </div>
                 <div className="mb-4">
                     <label htmlFor="password" className="text-sm text-black float-left w-32">Password</label>

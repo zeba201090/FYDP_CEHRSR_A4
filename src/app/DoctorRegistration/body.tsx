@@ -31,7 +31,7 @@ export default function Main() {
     }
 
     try {
-      const response = await fetch('/api/register-doctor', {
+      const response = await fetch('/api/doctorReg', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

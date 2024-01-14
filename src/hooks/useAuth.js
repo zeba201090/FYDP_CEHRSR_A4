@@ -8,8 +8,8 @@ const STORAGE_KEY = 'authData';
 
 export function useAuth() {
   // Try to get auth state from local storage on initial render
-  const storedAuth = JSON.parse(localStorage.getItem(STORAGE_KEY));
-  const [auth, setAuth] = React.useState(storedAuth || null);
+  // const storedAuth = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  const [auth, setAuth] = React.useState( null);
 
   const getVerifiedToken = async () => {
     const cookies = new Cookies();
@@ -18,7 +18,7 @@ export function useAuth() {
     setAuth(verifiedToken);
 
     // Save the updated auth state to local storage
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(verifiedToken));
+    // localStorage.setItem(STORAGE_KEY, JSON.stringify(verifiedToken));
   };
 
   // Fetch the authentication state on the initial render and on client-side

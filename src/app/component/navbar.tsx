@@ -1,11 +1,13 @@
-"use client" ;
 import ProjectLogo from 'next/image'
-import { useAuth } from "@/hooks/useAuth";
 import Link from 'next/link';
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../api/auth/[...nextauth]/route'
+import { LoginButton, LogoutButton } from '../auth'
+import { User } from '../user'
 
-function Navbar() {
-  const auth = useAuth();
 
+ async function Navbar() {
+  const session  = await getServerSession(authOptions)
   return (
     <div>
       <header className="px-20 py-8 shadow-lg flex items-center justify-between">
@@ -23,15 +25,17 @@ function Navbar() {
           </ul>
         </nav>
 
-        {auth ? (
+        {session ? (
+          
           // Render content for logged-in users
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-           <Link href={`/WelcomePatient/${encodeURIComponent(JSON.stringify(auth.username))}`}>
-  User Dashboard - {JSON.stringify(auth.username)}
+           <Link href={`/WelcomePatient/${encodeURIComponent(JSON.stringify(session))}`}>
+  User Dashboard - {JSON.stringify(session)}
 </Link>
-
-
+          
+<LogoutButton />
           </button>
+          
         ) : (
           // Render the login/registration button for non-logged-in users
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">

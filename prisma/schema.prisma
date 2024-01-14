@@ -11,7 +11,7 @@ datasource db {
 
 // doctors.prisma
 
-model Doctor {
+model doctor{
   doctor_id              Int       @id @default(autoincrement())
   first_name             String    @db.VarChar(255)
   last_name              String    @db.VarChar(255)
@@ -34,7 +34,7 @@ model Hospital {
   phone_number      String?   @db.VarChar(15)
   email             String?   @unique @db.VarChar(255)
   created_at        DateTime  @default(now()) @db.Timestamp(6)
-  doctors           Doctor[]
+  doctors           doctor[]
 }
 
 
