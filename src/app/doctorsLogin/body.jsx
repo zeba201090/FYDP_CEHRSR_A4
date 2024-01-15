@@ -29,7 +29,6 @@ function Loginbody() {
       setError(true);
     } else {
     
-      console.log(result);
       router.refresh();
       router.push('/WelcomeDoctor');
       router.refresh();

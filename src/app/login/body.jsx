@@ -11,7 +11,6 @@ function Loginbody() {
 
     
     const router = useRouter();
-    const [login, setLogin] = useState(false);
     const [national_id, setNational_id] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
@@ -32,18 +31,18 @@ function Loginbody() {
         setError(true);
       } else {
       
-        console.log(result);
-        router.push('/');
+        router.refresh();
+        router.push('/WelcomePatient');
+        router.refresh();
+
       }
     };
 
   return (
     <main>
-      <button onClick={() => setLogin(true)}>Login</button>
-      <button onClick={() => setLogin(false)}>Logout</button>
-      {login ? (<p> signin</p> ) : ( <p> login </p> )}
-
       
+
+
         <div className="w-1/2 border-blue-700 border-2 rounded-md mx-auto my-20">
             <div className="flex items-center justify-center py-10 flex-col">
             <form className="py-10 flex-col" onSubmit={submit}>

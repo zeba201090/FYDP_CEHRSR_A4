@@ -1,13 +1,12 @@
 'use client';
-
 import React from 'react';
-
 import { useState } from 'react';
 
 const MedicalRecordEntry = () => {
-  const NID ='58556802';
-  const Name='John Doe';
-  const Age='25';
+  const [patient_name, setPatientName] = useState('');
+  var patient_birthyear='';
+  var patient_gender='';
+  var patient_blood='';
   const [nid, setNid] = useState('');
   const [patientAge, setPatientAge] = useState('');
   const [symptoms, setSymptoms] = useState('');
@@ -18,51 +17,76 @@ const MedicalRecordEntry = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
     
-  const getNid = async(e)=>{
+  const getNid = async (e) => {
     e.preventDefault();
-    const id={nid}
-    console.log('from submit',id)
-    const response=await fetch('/api/PatientInfo',{ 
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(id),
-    });
-    if(response.status===201){
-        
-    }
-  }
-
-  const ehr_submit = async (e) => {
-    e.preventDefault();
-    const data = {
-      doctorName: 'John Doe',
-      patientAge,
-      symptoms,
-      diagnosis,
-      medicine,
-      tests,
-      comments,
-    };
-    try{
-      const result = await fetch('/api/EHREntry', {
+    const id = { nid };
+    console.log(nid);
+  
+    console.log('Before fetch');
+  
+    try {
+      const response = await fetch('/api/PatientInfo', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(id),
       });
-    } 
-    catch (error) {
-      console.error('Failed to publish:', error);
-    }
+  
+      console.log('After fetch');
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log(data);
+      console.log(data?.chain_response?.firstName);
+      
+      
+    
+  
+      setLoading((current) => !current);
+      setPatientName(data?.chain_response?.firstName);
 
-    setPatientAge('');
-    setSymptoms('');
-    setDiagnosis('');
-    setMedicine('');
-    setTests('');
-    setComments('');
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
+  
+  
+  
+  // const ehr_submit = async (e) => {
+  //   e.preventDefault();
+  //   const data = {
+  //     doctorName: 'John Doe',
+  //     patientAge,
+  //     symptoms,
+  //     diagnosis,
+  //     medicine,
+  //     tests,
+  //     comments,
+  //   };
+  //   try{
+  //     const result = await fetch('/api/PatientInfo', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(data),
+  //     });
+  //     console.log(result);
+  //     console.log("hi");
+  //   } 
+  //   catch (error) {
+  //     console.error('Failed to publish:', error);
+  //   }
+
+  //   setPatientAge('');
+  //   setSymptoms('');
+  //   setDiagnosis('');
+  //   setMedicine('');
+  //   setTests('');
+  //   setComments('');
+  // };
     
 
   return (
@@ -90,19 +114,17 @@ const MedicalRecordEntry = () => {
         <div className="flex flex-row justify-center h-auto m-2 border-2 rounded-md">
           <div className="bg-blue-100 float-left w-1/4 py-3 px-4 rounded-md ">
             <label className="text-l font-bold text-blue-900 my-7 ">Patient General Info</label>
-            { nid ? (
-                  <div className='py-3'>
-                    <p className='py-1 md:text-s'>Patient Name: John Doe</p>
-                    <p className='py-1 md:text-s'>Patient Age: 25</p>
-                    <p className='py-1 md:text-s'>Patient NID: 58556802</p>
-                  </div>
-                ) : null }
-
+              {loading &&(<div className='py-3'>
+                <p className='py-1 md:text-s'>Patient Name: {patient_name}</p>
+                <p className='py-1 md:text-s'>Patient Birthyear: {patient_birthyear}</p>
+                <p className='py-1 md:text-s'>Patient Gender: {patient_gender}</p>
+                <p className='py-1 md:text-s'>Patient Blood Group: {patient_blood}</p>
+              </div>)}
           </div>
 
           <div className="bg-white float-left w-3/4 py-4 px-4">
             <label className="text-l font-bold justify-center text-blue-900 pl-2">EHR Entry</label>
-            <form onSubmit={ehr_submit}>
+            <form >
             <div className="pt-5 pb-3">
               <label className="text-l font-bold px-2 ">Patient Age:</label>
               <input

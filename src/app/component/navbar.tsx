@@ -8,6 +8,7 @@ import { User } from '../user'
 
  async function Navbar() {
   const session  = await getServerSession(authOptions)
+  const type = session?.user?.type || null
   return (
     <div>
       <header className="px-20 py-8 shadow-lg flex items-center justify-between">
@@ -29,7 +30,8 @@ import { User } from '../user'
           
           // Render content for logged-in users
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-           <Link href={`/WelcomePatient`}>
+          
+          <Link href={`/Welcome${type}`}>
               Dashboard - {(session?.user?.name)}
             </Link>
           
@@ -42,7 +44,7 @@ import { User } from '../user'
             <a href="/login">Login / Registration</a>
           </button>
         )}
-        {session ? (<LogoutButton />) :null}
+        {!session ? null : ( <div> <LogoutButton/> </div>) }
       </header>
     </div>
   );

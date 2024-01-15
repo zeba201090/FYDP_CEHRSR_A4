@@ -7,9 +7,7 @@ export async function patientAuthProvider(credentials) {
   try {
     const { password: password } = credentials;
     const  national_id = credentials?.national_id;
-    console.log('national_id', national_id);
-    console.log('password', password);
-    console.log('backend');
+    
     const streamName = national_id;
     const key = 'patientinfo';
 
@@ -44,7 +42,7 @@ export async function patientAuthProvider(credentials) {
     if (chain_nid === national_id && chain_password === password) {
       
 
-      return Promise.resolve({ id: national_id, name: chain_firstname });
+      return Promise.resolve({ id: national_id, name: chain_firstname, type: "Patient"  });
     } else {
       // Authentication failed
       return Promise.resolve(null);

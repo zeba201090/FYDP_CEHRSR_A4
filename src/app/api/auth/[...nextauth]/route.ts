@@ -21,7 +21,6 @@ CredentialsProvider({
   authorize: async (credentials: any) => {
 
      const {type} = credentials as { type: string };
-     console.log("heeeeeeeeeeeeereeeeeeeeee",type);
      
      
       
@@ -57,14 +56,14 @@ CredentialsProvider({
         id: user.doctor_id + '',
         national_id: user.national_id,
         name: user.first_name + ' ' + user.last_name,
+        type: "Doctor",
         randomKey: 'Hey cool',
       }  // Adjust User type accordingly
       
     }
 
-    else 
+    else if (type === 'patient' ) 
      {
-      console.log("inside else",type);
 
         const user = await patientAuthProvider(credentials);
         return Promise.resolve(user);
@@ -75,29 +74,29 @@ CredentialsProvider({
 
   ],
   pages: {
-    signIn: '/doctorsLogin',
+    signIn: '/login',
     
   },
  
   callbacks: {
     session: ({ session, token }) => {
-      console.log('Session Callback', { session, token })
       return {
         ...session,
         user: {
           ...session.user,
           id: token.id,
+          type: token.type,
           randomKey: token.randomKey
         }
       }
     },
     jwt: ({ token, user }) => {
-      console.log('JWT Callback', { token, user })
       if (user) {
         const u = user as unknown as any
         return {
           ...token,
           id: u.id,
+          type: u.type,
           
         }
       }

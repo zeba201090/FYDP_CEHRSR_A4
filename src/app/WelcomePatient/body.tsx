@@ -1,18 +1,17 @@
-"use client";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 
-import { Router } from "next/router";
-
 export default async function WelcomePatient() {
-  const router = useRouter();
  
   const session = await getServerSession(authOptions) || null;
-
+  if (!session) {
+    return(<h1>Please Login</h1>);
+  }
+  
+  else {
 
   return (
     <main className="flex flex-col justify-center items-center">
@@ -59,4 +58,4 @@ export default async function WelcomePatient() {
       </div>
     </main>
   );
-}
+}}

@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { resourceUsage } from 'process';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse){
-    if(req.method==='POST'){
-        const {pid,did,dname,dnum}=req.body;
+export async function POST(request) {
+        const {pid,did,dname,dnum}= request.json;
         const formData={'json':{pid,did,dname,dnum}};
         
-        const streamName=pid.toString();
+        const streamName= pid.toString();
         const key = 'health'; 
 
         const multichainConfig = {
@@ -35,5 +35,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log(server_response);
         
         res.status(201).json(server_response);
-    }
+    
 }
