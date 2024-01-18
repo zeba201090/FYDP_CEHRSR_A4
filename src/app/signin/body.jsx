@@ -35,7 +35,7 @@ function LoginBody() {
       setError(true);
     } else {
       router.refresh();
-      router.push('/WelcomePatient');
+      router.push('/dashboard');
       router.refresh();
 
     }
@@ -59,7 +59,7 @@ function LoginBody() {
       setError(true);
     } else {
       router.refresh();
-      router.push("/WelcomeDoctor");
+      router.push("/dashboard");
       router.refresh();
     }
   };

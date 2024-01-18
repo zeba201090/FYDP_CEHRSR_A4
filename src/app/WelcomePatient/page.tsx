@@ -1,4 +1,4 @@
-import WelcomePatient from './body';
+import WelcomePatient from '../dashboard/Patient';
 
 
 export default function Page (){
