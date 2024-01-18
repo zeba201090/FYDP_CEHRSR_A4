@@ -7,11 +7,10 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 export default async function WelcomePatient() {
  
   const session = await getServerSession(authOptions) || null;
-  if (!session) {
-    return(<h1>Please Login</h1>);
-  }
+
+ 
   
-  else {
+  
 
   return (
     <main className="flex flex-col justify-center items-center">
@@ -57,5 +56,6 @@ export default async function WelcomePatient() {
         </button>
       </div>
     </main>
+    
   );
-}}
+}

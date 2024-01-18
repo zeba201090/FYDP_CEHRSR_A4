@@ -66,7 +66,7 @@ CredentialsProvider({
      {
 
         const user = await patientAuthProvider(credentials);
-        return Promise.resolve(user);
+        return user;
   }
     }}
 ),
@@ -74,7 +74,7 @@ CredentialsProvider({
 
   ],
   pages: {
-    signIn: '/login',
+    signIn: '/signin',
     
   },
  
