@@ -7,5 +7,5 @@ export { default } from 'next-auth/middleware'
 
 export const config = {
   
-  matcher: ['/dashboard', '/ViewConsent', '/other/:path*', '/help/:path*']
+  matcher: ['/dashboard', '/ViewConsent', '/MedicalRecordEntry', '/help/:path*']
 }

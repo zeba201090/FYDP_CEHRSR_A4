@@ -4,15 +4,19 @@ import { useState } from 'react';
 
 const MedicalRecordEntry = () => {
   const [patient_name, setPatientName] = useState('');
-  var patient_birthyear='';
-  var patient_gender='';
-  var patient_blood='';
+  const [patient_birthyear, setPatientBirthyear] = useState('');
+  const [patient_gender, setPatientGender] = useState('');
+  const [patient_blood, setPatientBlood] = useState('');
   const [nid, setNid] = useState('');
   const [patientAge, setPatientAge] = useState('');
   const [symptoms, setSymptoms] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
-  const [medicine, setMedicine] = useState('');
-  const [tests, setTests] = useState('');
+  const [subdiagnosis, setSubDiagnosis] = useState('');
+  const [treatment, setTreatment] = useState('');
+  const [subtreatment, setSubTreatment] = useState('');
+  const [determination, setDetermination] = useState('');
+  const [type, setType] = useState('');
+  const [findings, setFindings] = useState('');
   const [comments, setComments] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -20,73 +24,71 @@ const MedicalRecordEntry = () => {
   const getNid = async (e) => {
     e.preventDefault();
     const id = { nid };
-    console.log(nid);
-  
-    console.log('Before fetch');
-  
-    try {
-      const response = await fetch('/api/PatientInfo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(id),
-      });
-  
-      console.log('After fetch');
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      try {
+        const response = await fetch('/api/PatientInfo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(id),
+        });  
+        if(!response.ok){
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        const name=data?.chain_response?.firstName+" "+data?.chain_response?.lastName
+        setLoading(true);
+        setPatientName(name);
+        setPatientBirthyear(data?.chain_response?.birthyear);
+        setPatientBlood(data?.chain_response?.blood);
+        setPatientGender(data?.chain_response?.gender);
+      } 
+      catch (error) {
+        console.error('Error fetching data:', error);
       }
-      
-      const data = await response.json();
-      console.log(data);
-      console.log(data?.chain_response?.firstName);
-      
-      
-    
-  
-      setLoading((current) => !current);
-      setPatientName(data?.chain_response?.firstName);
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
   };
   
-  
-  
-  // const ehr_submit = async (e) => {
-  //   e.preventDefault();
-  //   const data = {
-  //     doctorName: 'John Doe',
-  //     patientAge,
-  //     symptoms,
-  //     diagnosis,
-  //     medicine,
-  //     tests,
-  //     comments,
-  //   };
-  //   try{
-  //     const result = await fetch('/api/PatientInfo', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(data),
-  //     });
-  //     console.log(result);
-  //     console.log("hi");
-  //   } 
-  //   catch (error) {
-  //     console.error('Failed to publish:', error);
-  //   }
-
-  //   setPatientAge('');
-  //   setSymptoms('');
-  //   setDiagnosis('');
-  //   setMedicine('');
-  //   setTests('');
-  //   setComments('');
-  // };
+  const ehr_submit = async (e) => {
+    e.preventDefault();
+    const data = {
+      patient_id: nid,
+      doctorName: 'John Doe',
+      patientAge,
+      symptoms,
+      diagnosis,
+      subdiagnosis,
+      treatment,
+      subtreatment,
+      determination,
+      type,
+      findings,
+      comments,
+    };
+    console.log(data);
+    try{
+      const result = await fetch('/api/EHREntry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if(result.ok){
+        setSuccess(true);
+        setPatientAge('');
+        setSymptoms('');
+        setDiagnosis('');
+        setSubDiagnosis('');
+        setDetermination('');
+        setTreatment('');
+        setSubTreatment('');
+        setType('');
+        setFindings('');
+        setComments('');
+      }
+    } 
+    catch (error) {
+      console.error('Failed to publish:', error);
+    }
+  };
     
 
   return (
@@ -101,10 +103,9 @@ const MedicalRecordEntry = () => {
           type="text" 
           placeholder="Patient ID" value={nid}
           onChange = { (e)=> { setNid(e.target.value) }}
+          required
           />
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4 rounded"
-            onClick={getNid}
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4 rounded"
           >
           Search
           </button>
@@ -124,13 +125,14 @@ const MedicalRecordEntry = () => {
 
           <div className="bg-white float-left w-3/4 py-4 px-4">
             <label className="text-l font-bold justify-center text-blue-900 pl-2">EHR Entry</label>
-            <form >
+            <form onSubmit={ehr_submit}>
             <div className="pt-5 pb-3">
               <label className="text-l font-bold px-2 ">Patient Age:</label>
               <input
                 className="border-2 border-gray-300 rounded-lg w-full p-2"
                 type="text"
                 placeholder="Enter Patient Age" onChange = { (e)=> { setPatientAge(e.target.value) }}
+                required
               />
             </div>
             <div className="pt-5 pb-3">
@@ -139,29 +141,65 @@ const MedicalRecordEntry = () => {
                 className="border-2 border-gray-300 rounded-lg w-full p-2"
                 type="text"
                 placeholder="Enter Symptoms" onChange = { (e)=> { setSymptoms(e.target.value) }}
+                required
               />
             </div>
             <div className="py-2">
-              <label className="text-l font-bold px-2 ">Diagnosis:</label>
+              <label className="text-l font-bold px-2 ">Diagnosis Catagory:</label>
               <textarea
                 className="border-2 border-gray-300 rounded-lg w-full p-2"
-                placeholder="Enter Diagnosis" onChange={ (e) => { setDiagnosis(e.target.value)}}
+                placeholder="Enter Diagnosis Catagory" onChange={ (e) => { setDiagnosis(e.target.value)}}
+                required
               />
             </div>
             <div className="py-2">
-              <label className="text-l font-bold px-2  ">Medicine:</label>
-              <input
+              <label className="text-l font-bold px-2 ">Diagnosis Sub Catagory:</label>
+              <textarea
                 className="border-2 border-gray-300 rounded-lg w-full p-2"
-                type="text"
-                placeholder="Enter Prescribed Medicine" onChange={(e) => { setMedicine(e.target.value) }}
+                placeholder="Enter Diagnosis Sub Catagory" onChange={ (e) => { setSubDiagnosis(e.target.value)}}
+                required
+              />
+            </div>
+            <div className="py-2">
+              <label className="text-l font-bold px-2 ">Treatment Catagory:</label>
+              <textarea
+                className="border-2 border-gray-300 rounded-lg w-full p-2"
+                placeholder="Enter Treatment Catagory" onChange={ (e) => { setTreatment(e.target.value)}}
+                required
+              />
+            </div>
+            <div className="py-2">
+              <label className="text-l font-bold px-2 ">Treatment Sub Catagory:</label>
+              <textarea
+                className="border-2 border-gray-300 rounded-lg w-full p-2"
+                placeholder="Enter Treatment Sub Catagory" onChange={ (e) => { setSubTreatment(e.target.value)}}
+                required
+              />
+            </div>
+            <div className="py-2">
+              <label className="text-l font-bold px-2 ">Determination:</label>
+              <textarea
+                className="border-2 border-gray-300 rounded-lg w-full p-2"
+                placeholder="Enter Determination" onChange={ (e) => { setDetermination(e.target.value)}}
+                required
               />
             </div>
             <div className="py-4">
-              <label className="text-l font-bold px-2 ">Tests:</label>
+              <label className="text-l font-bold px-2 ">Type:</label>
               <input
                 className="border-2 border-gray-300 rounded-lg w-full p-2 "
                 type="text"
-                placeholder="Enter Suggested Tests" onChange={(e) => {  setTests(e.target.value) }}
+                placeholder="Enter Type" onChange={(e) => {  setType(e.target.value) }}
+                required
+              />
+            </div>
+            <div className="py-4">
+              <label className="text-l font-bold px-2 ">Findings:</label>
+              <input
+                className="border-2 border-gray-300 rounded-lg w-full p-2 "
+                type="text"
+                placeholder="Enter Findings" onChange={(e) => {  setFindings(e.target.value) }}
+                required
               />
             </div>
             <div className="py-2">
@@ -169,6 +207,7 @@ const MedicalRecordEntry = () => {
               <textarea
                 className="border-2 border-gray-300 rounded-lg w-full p-2"
                 placeholder="Enter Comments" onChange={(e) => { setComments(e.target.value) }}
+                required
               />
               </div>
               <div> 

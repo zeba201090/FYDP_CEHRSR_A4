@@ -4,8 +4,9 @@ import axios from 'axios';
 export async function POST(request) {
 
   const res = await request.json();
-  console.log(res);
-  const streamName= "80272410";
+  const streamName=res.patient_id;
+  console.log(streamName);
+  delete(res.patient_id);
   const multichainConfig = {
     host: process.env.HOST,
     port: process.env.RPCPORT,
@@ -13,8 +14,27 @@ export async function POST(request) {
     rpcpassword: process.env.RPCPASSWORD,
   };
 
+  const date = new Date();
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  };
+  
+  const formattedDate = date.toLocaleString('en-US', options);
+  const keydate = formattedDate.replace(' ', '');
+  const key='Entry:'+keydate;
+  console.log('key',key);
   const formData = {
-    json: res
+    json: {
+      ...res,
+      date: formattedDate,
+      hospital: 'test',
+    }
   };
   console.log('formData', formData);
 
@@ -25,7 +45,7 @@ export async function POST(request) {
       `http://${multichainConfig.host}:${multichainConfig.port}`,
       {
         method: 'publish',
-        params: [streamName, 'EHR', formData],
+        params: [streamName, key, formData],
       },
       {
         headers: {
@@ -37,16 +57,17 @@ export async function POST(request) {
 
     const publishData = await publishResponse.data;
 
-    if (publishData.result) {
+    if(publishData.result){
         console.log('Publish successful');
-        console.log('Multichain response:', publishData.result);
-        return NextResponse.json({ message: 'Success' });
-      } else {
+        return Response.json({status: 200});
+    } 
+    else{
         console.error('Error publishing to Multichain:', publishData.error);
-        return NextResponse.json({ message: 'Failed to publish to Multichain' });
+        return Response.json({ message: 'Failed to publish to Multichain' });
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error processing request:', error);
-      return NextResponse.json({ message: 'Internal Server Error' });
+      return Response.json({ message: 'Internal Server Error' });
     }
   }

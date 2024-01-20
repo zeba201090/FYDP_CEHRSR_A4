@@ -86,7 +86,8 @@ CredentialsProvider({
           ...session.user,
           id: token.id,
           type: token.type,
-          randomKey: token.randomKey
+          randomKey: token.randomKey,
+          auth: null
         }
       }
     },
@@ -97,6 +98,7 @@ CredentialsProvider({
           ...token,
           id: u.id,
           type: u.type,
+          auth: null,
           
         }
       }
