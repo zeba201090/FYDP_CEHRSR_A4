@@ -3,11 +3,16 @@ import React, { Suspense } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Loading from '../loading'
+import Link from 'next/link';
 
 const id = {nid:'80272410'};
 
 export default function ConsultationHistory(){
+    let { data: session } = useSession();
+    console.log("Session", session?.user?.auth);
+
     const [consultations, setConsultations] = useState([]);
     const router = useRouter();
 
@@ -83,9 +88,11 @@ export default function ConsultationHistory(){
                 </table>
             </div>
             <div className="flex mt-4">
+                <Link href={'/PatientHistory'}>
                 <button className="bg-blue-500 text-white px-4 py-2 mr-10 rounded">
                     Back to Previous Page
                 </button>
+                </Link>
                 <button className="bg-blue-500 text-white px-4 py-2 rounded">
                     Summarized Report
                 </button>

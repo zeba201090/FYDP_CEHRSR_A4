@@ -1,20 +1,14 @@
 "use client";
-
-import { get } from "http";
-import { getToken } from "next-auth/jwt";
-import React, { use } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { collection, getDocs, addDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import Image from "next/image";
-import  Link  from "next/link";
-import { collection, getDocs, addDoc } from "firebase/firestore";
-import { set, update } from "firebase/database";
+import Link from "next/link";
+import updateSession from "../updateSession";
 
 const PatientHistory = () => {
-  let { data: session } = useSession();
-
   const [data, setData] = useState(false);
   const [NID, setNID] = useState("");
   const [OTP, setOTP] = useState("");
@@ -22,10 +16,17 @@ const PatientHistory = () => {
   const [id, setId] = useState(false);
   const [generatedOTP, setGeneratedOTP] = useState("");
   const router = useRouter();
+  const { data: session, update } = useSession();
+
+  useEffect(() => {
+    console.log("Client Session", session?.user?.auth);
+    setData(session?.user?.auth);
+  }, [session]);
 
   const generateOTP = () => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOTP(otp);
+    console.log("OTP", otp);
     return otp;
   };
 
@@ -35,16 +36,11 @@ const PatientHistory = () => {
 
   const sendOtpToFirestore = async (otp, nid) => {
     try {
-      // Check if the 'otp' collection exists
       const otpCollectionRef = collection(db, nid);
       const collectionSnapshot = await getDocs(otpCollectionRef);
 
       if (collectionSnapshot.empty) {
-        console.log("Collection 'otp' does not exist. Creating...");
-
         await addDoc(otpCollectionRef, { otp: otp });
-
-        console.log("Collection 'otp' created successfully.");
       } else {
         await addDoc(otpCollectionRef, { otp: otp });
       }
@@ -54,33 +50,27 @@ const PatientHistory = () => {
   };
 
   async function MedicalHistory() {
-
     setLoading(true);
 
     try {
       const otp = generateOTP();
-      console.log("Generated OTP:", otp);
-       await sendOtpToFirestore(otp, NID);
+      await sendOtpToFirestore(otp, NID);
       setId(true);
-      console.log("OTP sent to firestore");
     } catch (error) {
       console.error("Fetch error:", error);
-    
     }
     setNID("");
   }
 
-  const handleVerifyOTP = () => {
-
+  const handleVerifyOTP = async() => {
     if (verifyOTP()) {
-
       session.user.auth = true;
-      setData(session.user.auth);
-       setId(false);
-
+      
+      
+      setId(false);
+      let d = updateSession();
+      setData(d);
       console.log("Client Session", session?.user?.auth);
-      console.log("OTP is valid");
-      router.push("/PatientHistory");
     } else {
       console.log("Invalid OTP");
     }
@@ -161,8 +151,8 @@ const PatientHistory = () => {
         </table>
       </div>
 
-
-      {data ? ( 
+      
+      {  data ? ( 
        <div className="flex items-center justify-center">
         <Link href={'/ConsultationHistory'}>
        <button
