@@ -12,7 +12,7 @@ const PatientHistory = () => {
   const [data, setData] = useState(false);
   const [NID, setNID] = useState("");
   const [OTP, setOTP] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [nid, setNid] = useState("");
   const [id, setId] = useState(false);
   const [generatedOTP, setGeneratedOTP] = useState("");
   const router = useRouter();
@@ -21,6 +21,13 @@ const PatientHistory = () => {
   useEffect(() => {
     console.log("Client Session", session?.user?.auth);
     setData(session?.user?.auth);
+    if (typeof window !== "undefined") {
+      const storedNid = localStorage.getItem("nid");
+      if (storedNid) {
+        setNid(storedNid);
+        
+      }
+    }
   }, [session]);
 
   const generateOTP = () => {
@@ -50,15 +57,16 @@ const PatientHistory = () => {
   };
 
   async function MedicalHistory() {
-    setLoading(true);
 
     try {
       const otp = generateOTP();
       await sendOtpToFirestore(otp, NID);
       setId(true);
+      
     } catch (error) {
       console.error("Fetch error:", error);
     }
+
     setNID("");
   }
 
@@ -71,6 +79,7 @@ const PatientHistory = () => {
       let d = updateSession();
       setData(d);
       console.log("Client Session", session?.user?.auth);
+      
     } else {
       console.log("Invalid OTP");
     }
@@ -99,6 +108,7 @@ const PatientHistory = () => {
                 <input
                   className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5  w-80 ease-linear transition-all duration-150"
                   onChange={(e) => {
+                    setNid(e.target.value)
                     setNID(e.target.value);
                   }}
                   type="text"
@@ -154,15 +164,15 @@ const PatientHistory = () => {
       
       {  data ? ( 
        <div className="flex items-center justify-center">
-        <Link href={'/ConsultationHistory'}>
-       <button
+       {/* <Link href={`/ConsultationHistory?${nid}`}> */}
+       <button onClick={() => router.push(`/ConsultationHistory?nid=${nid}`)}
            className="flex flex-col items-center justify-center w-500 h-500 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200"
        >
            <Image src={"/consulting.png"} alt="consulting" id="consulting" height={200} width={130} />
 
             Patient's Previous Record
        </button>
-       </Link>
+       {/* </Link> */}
        <Link href={`/MedicalRecordEntry`}>
        <button
            className="flex flex-col items-center justify-center w-400 h-400 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200"

@@ -6,15 +6,22 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Loading from '../loading'
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
-const id = {nid:'80272410'};
+
+    
+
 
 export default function ConsultationHistory(){
+    const router = useRouter();
+    
+    const params = useSearchParams();
+    const id ={nid:params.get('nid')} 
+    console.log(id);
     let { data: session } = useSession();
     console.log("Session", session?.user?.auth);
 
     const [consultations, setConsultations] = useState([]);
-    const router = useRouter();
 
     const EHRInfo=async(e)=>{
         try {
