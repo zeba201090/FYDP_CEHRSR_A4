@@ -13,6 +13,7 @@
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "broadcast-channel": "^7.0.0",
+    "firebase": "^10.7.2",
     "jose": "^5.2.0",
     "next": "^14.0.3",
     "next-auth": "^4.24.5",

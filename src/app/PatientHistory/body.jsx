@@ -45,6 +45,11 @@ const PatientHistory = () => {
 
         const otp = generateOTP();
         console.log('Generated OTP:', otp);
+        const response = await fetch('/api/otpReceive', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ otp: generatedOTP, nid: NID }),
+        });
 
       } catch (error) {
         console.error('Fetch error:', error);
@@ -61,9 +66,14 @@ const PatientHistory = () => {
     if (verifyOTP())
     {    
       session.user.auth = 'true';
-      setData(session.user.auth);
+      
       console.log('Client Session', session?.user?.auth)
       console.log('OTP is valid');
+      //ekhane saadman allowaccess er reponse anbe
+      // if Response.ok {
+    //   setData(session.user.auth);
+    // }
+
 
 
     } 
@@ -103,7 +113,7 @@ const PatientHistory = () => {
       {id && (
         <div className="bg-white flex justify-center items-center h-auto border-m mt-4">
           <label className="p-5 text-xl font-bold">
-            Enter OTP received on your mobile:
+            Enter OTP for EHR access:
           </label>
           <input
             className="bg-blue-100 border-2 h-14 rounded-xl justify-center px-6"
@@ -122,15 +132,7 @@ const PatientHistory = () => {
           </button>
         </div>
       )}
-      {data ? <ConsultationHistory/> : null}
-
-      {data?  <div className="flex justify-center items-center h-auto border-m mt-10">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4 rounded"
-          onClick={() => {
-            router.push('/MedicalRecordEntry');
-          }}>ehr entry </button> </div>
-        : null}
+      
 
     
 </div>

@@ -1,8 +1,10 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useRouter } from "next/navigation";
+import Loading from '../loading'
+
 const id = {nid:'80272410'};
 
 export default function ConsultationHistory(){
@@ -48,6 +50,8 @@ export default function ConsultationHistory(){
     },[])
 
     return (
+        <Suspense fallback={<Loading/>}>
+
         <main className="flex flex-col items-center justify-center">
             <h1 className="text-3xl font-bold border-b-4 border-blue-500 mt-20 mb-5">Consultation History
             </h1>
@@ -63,6 +67,8 @@ export default function ConsultationHistory(){
                     </thead>
                     <tbody>
                         {consultations.map((consultation, index) => (
+                          
+
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="text-md px-8 py-4 border">{consultation.date}</td>
                                 <td className="text-md px-8 py-4 border">{consultation.hospital}</td>
@@ -71,6 +77,7 @@ export default function ConsultationHistory(){
                                     View Details
                                 </button></td>
                             </tr>
+                            
                         ))}
                     </tbody>
                 </table>
@@ -84,5 +91,7 @@ export default function ConsultationHistory(){
                 </button>
             </div>
         </main>
+        </Suspense>
+
     )
 }
