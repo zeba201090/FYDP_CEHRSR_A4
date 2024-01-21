@@ -71,15 +71,27 @@ const PatientHistory = () => {
   }
 
   const handleVerifyOTP = async() => {
+    const request=nid;
     if (verifyOTP()) {
-      session.user.auth = true;
-      
-      
-      setId(false);
-      let d = updateSession();
-      setData(d);
-      console.log("Client Session", session?.user?.auth);
-      
+      try{
+        const response = await fetch('/api/AllowAccess',{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(request),
+        });  
+        if(!response.ok){
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        session.user.auth = true
+        setId(false);
+        let d = updateSession();
+        setData(d);
+        console.log("Client Session", session?.user?.auth);
+      }
+      catch (error) {
+          console.error('Error:', error);
+      }
     } else {
       console.log("Invalid OTP");
     }
