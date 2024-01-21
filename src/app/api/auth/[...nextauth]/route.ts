@@ -87,8 +87,7 @@ CredentialsProvider({
           id: token.id,
           type: token.type,
           randomKey: token.randomKey,
-          auth: token.auth,
-        }
+          auth: token.auth !== undefined ? token.auth : false,        }
       }
     },
     jwt: ({ token, user }) => {
