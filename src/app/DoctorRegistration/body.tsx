@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 
 export default function Main() {
+  const [success, setSucess] = useState(false);
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -11,7 +12,7 @@ export default function Main() {
     password: '',
     confirmPassword: '',
     bm_dc_license_number: '',
-    assoc_hospital_id: '',
+    assoc_hospital_id: null,
   });
 
   const handleInputChange = (e) => {
@@ -42,6 +43,7 @@ export default function Main() {
       if (response.ok) {
         const data = await response.json();
         console.log('Doctor registered successfully:', data);
+        setSucess(true);
       } else {
         const errorData = await response.json();
         console.error('Error registering doctor:', errorData.error);
@@ -163,7 +165,7 @@ export default function Main() {
                 Associated <br /> Hospital ID
               </label>
               <input
-                type="text"
+                type="number"
                 id="assoc_hospital_id"
                 className="border border-blue-700 rounded p-1 ml-7 text-sm flex-1"
                 required
@@ -178,6 +180,12 @@ export default function Main() {
                 Sign Up
               </button>
             </div>
+            {success ? (
+              <div className=" p-4 px-auto mx-auto bg-green-200 rounded-md w-4/5 ">
+                 Successfully Registered.
+                
+              </div>
+            ): null}
           </form>
         </div>
       </div>

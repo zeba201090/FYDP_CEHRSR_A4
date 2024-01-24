@@ -107,7 +107,7 @@ export default function ConsultationHistory(){
                 </table>
             </div>
             <div className="flex mt-4">
-                <Link href={'/PatientHistory'}>
+                <Link href={'/dashboard'}>
                 <button className="bg-blue-500 text-white px-4 py-2 mr-10 rounded">
                     Back to Previous Page
                 </button>
