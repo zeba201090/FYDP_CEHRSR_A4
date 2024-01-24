@@ -8,13 +8,9 @@ import Loading from '../loading'
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-
-    
-
-
 export default function ConsultationHistory(){
     const router = useRouter();
-    
+    const ehr;
     const params = useSearchParams();
     const id ={nid:params.get('nid')} 
     console.log(id);
@@ -30,23 +26,25 @@ export default function ConsultationHistory(){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(id),
           });  
-          if(!response.ok){
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          const data = await response.json();
-          const ehr=data?.cleaned_response;
-          const consultation_date=ehr.map((item)=>{
-            console.log(item.data.json);
-            return(item.data.json);
-          }); 
-          if (consultation_date && consultation_date.length > 0) {
-            const consultationsData = consultation_date.map(consultation => ({
-                    date: consultation.date,
-                    hospital: consultation.hospital,
-                    doctor: consultation.doctorName,
-                }));
-                setConsultations(consultationsData);
-            } 
+          if(response.ok){
+              const data = await response.json();
+              ehr=data?.cleaned_response;
+              console.log('ehr',ehr);
+              const consultation_date=ehr.map((item)=>{
+                  return(item.data.json);
+                }); 
+                if (consultation_date && consultation_date.length > 0) {
+                    const consultationsData = consultation_date.map(consultation => ({
+                        date: consultation.date,
+                        hospital: consultation.hospital,
+                        doctor: consultation.doctorName,
+                    }));
+                    setConsultations(consultationsData);
+                } 
+            }
+            else{
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
         }
         catch (error) {
             console.error('Error fetching data:', error);
@@ -56,6 +54,22 @@ export default function ConsultationHistory(){
     const view_ehr=async(key,id)=>{
         router.push(`/ConsultationHistory/ViewEHR?id=${id.nid}&key=${key}`);
     } 
+
+    const summary=async(e)=>{
+        try{
+          const response = await fetch('/api/SummaryApi',{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(ehr),
+          });  
+          if(!response.ok){
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+        }
+        catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
 
     useEffect(()=>{
         EHRInfo();
@@ -79,8 +93,6 @@ export default function ConsultationHistory(){
                     </thead>
                     <tbody>
                         {consultations.map((consultation, index) => (
-                          
-
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="text-md px-8 py-4 border">{consultation.date}</td>
                                 <td className="text-md px-8 py-4 border">{consultation.hospital}</td>
@@ -100,7 +112,7 @@ export default function ConsultationHistory(){
                     Back to Previous Page
                 </button>
                 </Link>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                <button onClick={summary} className="bg-blue-500 text-white px-4 py-2 rounded">
                     Summarized Report
                 </button>
             </div>
