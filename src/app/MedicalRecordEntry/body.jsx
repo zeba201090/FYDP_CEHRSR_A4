@@ -28,10 +28,11 @@ const MedicalRecordEntry = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const docName = session?.user?.name;
+
   
   const sendNotification = async (doc, nid) => {
     try {
-      const otpCollectionRef = collection(db, nid);
+      const otpCollectionRef = collection(db, '80272410');
   
       const data = {
         notification: `EHR permission revoked from Dr. ${doc}`,
@@ -142,7 +143,7 @@ const MedicalRecordEntry = () => {
     <div className="flex justify-center items-center h-auto border-m mt-10">
       <div className="bg-white w-4/5 h-auto rounded-sm shadow-2xl p-5 py-12 ">
         <label className="text-2xl font-bold text-center items-center">Medical Record Entry</label>
-        <form onSubmit={getNid}>
+        <form >
           <div className="flex justify-center items-center">
           <label className="text-l font-bold px-5 my-7">Patient ID :</label>
           <input className="border-2 border-blue-300 border-x-2 rounded-lg w-1/2 h-8 p-5" 

@@ -9,16 +9,8 @@ import { useSession } from "next-auth/react";
 
 
 export default function EHRData(){
-    const router = useRouter();
     let { data: session } = useSession();
-    if(session?.user?.auth==false){
-        router.replace('/dashboard');
-    }
     console.log("Session", session?.user?.name);
-    console.log("Session", session?.user?.auth);
-    
-    
-
     const patient_name=session?.user?.name;
     const pdf=useRef();
     // const [loading,setLoading]=useState(false);
@@ -43,7 +35,7 @@ export default function EHRData(){
     const view_ehr=async(e:any)=>{
         const request={id,key};
         try {
-            const response = await fetch('/api/EHRDetailsDoc',{
+            const response = await fetch('/api/EHRDetails',{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(request),

@@ -1,16 +1,21 @@
-import React from "react";
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { useSpring, animated } from 'react-spring';
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import NotificationBell from "../component/notificationBell";
+import React, { useState, useEffect } from 'react';
+
+
 
 export default async function WelcomePatient() {
- 
-  const session = await getServerSession(authOptions) || null;
+  const router = useRouter();
+  const { data: session } = useSession();
+  const nid = session?.user?.id;
 
- 
-  
   
 
   return (
@@ -18,9 +23,9 @@ export default async function WelcomePatient() {
       <h1 className="text-3xl font-bold text-center border-b-4 border-blue-800 mt-10 mb-5">
         Welcome {(session?.user?.name)}
       </h1>
-      <NotificationBell userId={'80272410'} />   
          <div className="flex items-center justify-center">
-        <button className="flex flex-col items-center justify-center w-500 h-500 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200">
+         <Link href = {`/PatientHistory?nid=${nid}`}>
+        <button   className="flex flex-col items-center justify-center w-500 h-500 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200">
           <Image
             src="/consulting.png"
             alt="consulting"
@@ -30,6 +35,8 @@ export default async function WelcomePatient() {
           />
           Consultation History{" "}
         </button>
+        </Link>
+       
         <button className="flex flex-col items-center justify-center w-400 h-400 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200">
           <Image
             src="/diagnostic.png"
@@ -43,19 +50,19 @@ export default async function WelcomePatient() {
 
         <button className="flex flex-col items-center justify-center w-400 h-400 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200">
           <Image
-            src="/shield.png"
-            alt="shield"
-            id="shield"
+            src="/book.png"
+            alt="Logs and Notifications"
+            id="book"
             height={200}
             width={130}
           />
-          Permissions
+          Logs & Notifications
         </button>
       </div>
       <div className="flex justify-center items-center">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded">
-          Summarized Report
-        </button>
+     
+      
+    
       </div>
     </main>
     

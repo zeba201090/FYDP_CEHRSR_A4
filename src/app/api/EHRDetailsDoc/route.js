@@ -4,11 +4,11 @@ import axios from 'axios';
 export async function POST(request) {
   try {
     const req = await request.json();
-    const form_nid = req.nid;
-    const streamName = form_nid;
-    
-    //  console.log(req);
-    //  console.log('streamName', streamName);
+    console.log(req);
+    const streamName = req.id;
+    var key = req.key;
+    key = 'Entry:'+key.replace(' ', '');
+    console.log(key);
 
     const multichainConfig = {
       host: process.env.HOST,
@@ -21,8 +21,8 @@ export async function POST(request) {
     const response = await axios.post(
       `http://${multichainConfig.host}:${multichainConfig.port}`,
       {
-        method: 'liststreamitems',
-        params: [streamName,],
+        method: 'liststreamkeyitems',
+        params: [streamName,key],
       },
       {
         headers: {
@@ -31,14 +31,12 @@ export async function POST(request) {
         },
       }
     );
-    const chain_response = response.data.result;
-    const entry_key = (key) => /^Entry:\d{2}\/\d{2}\/\d{4},\d{2}:\d{2}:\d{2}/.test(key);
-    const cleaned_response = chain_response.filter((entry) => entry.keys.some(entry_key));
-    //  console.log(cleaned_response);
-    return NextResponse.json({cleaned_response},{status: 200});
+    const chain_response = response.data.result[0].data.json;
+    return Response.json({chain_response},{status: 200});
   } 
   catch (error) {
     console.error('Error fetching Multichain stream items:', error.message);
     return NextResponse.json({ message: 'Internal Server Error' });
+
   }
 }

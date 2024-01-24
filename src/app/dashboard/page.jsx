@@ -1,5 +1,5 @@
 import WelcomeDoctor from './Doctor';
-import WelcomePatient from './Patient';
+import WelcomePatientWithSuggestions from './Patient';
 
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../api/auth/[...nextauth]/route'
@@ -11,7 +11,7 @@ export default async function Home() {
   
   
     return (
-      ((session?.user?.type==='Patient') ? <WelcomePatient/> : <WelcomeDoctor/> )
+      ((session?.user?.type==='Patient') ? <WelcomePatientWithSuggestions/> : <WelcomeDoctor/> )
 
     )
   }

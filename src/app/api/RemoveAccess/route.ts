@@ -7,7 +7,7 @@ export async function POST(request) {
 
     const multichainConfig = {
         host: process.env.HOST,
-        port: 10245,
+        port: 10254,
         rpcuser: process.env.RPCUSER,
         rpcpassword:"A48P82GYqD49G2f1UM1GUb9sKiC238cJjjhBfg4bhmJS",
     };
@@ -27,4 +27,5 @@ export async function POST(request) {
         throw new Error(`HTTP error subscribing to stream! Status: ${subscribeResponse.status}`);
     }
     console.log("Unsubscribed to stream");
+    return Response.json({ status: 200 });
 }
