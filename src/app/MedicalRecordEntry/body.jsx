@@ -1,8 +1,15 @@
 'use client';
 import React from 'react';
 import { useState } from 'react';
+import { doc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useSession } from 'next-auth/react';
+import {useRouter} from 'next/navigation';
 
 const MedicalRecordEntry = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [patient_name, setPatientName] = useState('');
   const [patient_birthyear, setPatientBirthyear] = useState('');
   const [patient_gender, setPatientGender] = useState('');
@@ -20,7 +27,23 @@ const MedicalRecordEntry = () => {
   const [comments, setComments] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-    
+  const docName = session?.user?.name;
+  
+  const sendNotification = async (doc, nid) => {
+    try {
+      const otpCollectionRef = collection(db, nid);
+  
+      const data = {
+        notification: `EHR permission revoked from Dr. ${doc}`,
+        timestamp: serverTimestamp(),
+      };
+  
+      await addDoc(otpCollectionRef, data);
+    } catch (error) {
+      console.error("Error adding notification: ", error.message);
+    }
+  };
+
   const getNid = async (e) => {
     e.preventDefault();
     const id = { nid };
@@ -50,7 +73,7 @@ const MedicalRecordEntry = () => {
     e.preventDefault();
     const data = {
       patient_id: nid,
-      doctorName: 'John Doe',
+      doctorName: docName,
       patientAge,
       symptoms,
       diagnosis,
@@ -84,6 +107,8 @@ const MedicalRecordEntry = () => {
         setFindings('');
         setComments('');
       }
+      sendNotification(docName, nid);
+
     } 
     catch (error) {
       console.error('Failed to publish:', error);
@@ -102,12 +127,11 @@ const MedicalRecordEntry = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      session.user.auth = true
-      setId(false);
-      let d = updateSession();
-      setData(d);
-      console.log("Client Session", session?.user?.auth);
+      session.user.auth = false
+      sendNotification(docName, nid);
+
     }
+    
     catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -238,7 +262,7 @@ const MedicalRecordEntry = () => {
                 </button>
             </div>
             </form>
-            {success && (
+            {!success && (
               <div className="p-4 bg-green-200 rounded-md w-4/5 ">
                 Record Successfully Saved.
                 <button onClick={exit} className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 mx-4 rounded float-right">

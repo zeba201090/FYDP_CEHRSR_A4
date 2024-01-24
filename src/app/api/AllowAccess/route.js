@@ -3,14 +3,15 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export async function POST(request) {
     const res = await request.json();
     console.log('res',res);
-    const streamName=res.nid;
+    // const streamName=res.nid;
+    const streamName='80272410'
     console.log('streamName',streamName);
 
     const multichainConfig = {
         host: process.env.HOST,
         port: 10254,
         rpcuser: process.env.RPCUSER,
-        rpcpassword:"4FvtSrGSouE4SGLmSTYDsKZPLBUNhatFAws5ucvNHg5v",
+        rpcpassword:"A48P82GYqD49G2f1UM1GUb9sKiC238cJjjhBfg4bhmJS",
     };
 
     try{

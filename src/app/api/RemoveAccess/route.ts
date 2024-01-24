@@ -3,13 +3,13 @@ import axios from 'axios';
 
 export async function POST(request) {
     const res = await request.json();       
-    const streamName=res.nid;
+    const streamName='80272410';
 
     const multichainConfig = {
         host: process.env.HOST,
         port: 10245,
         rpcuser: process.env.RPCUSER,
-        rpcpassword:"7NDGrmUbaCK4RQUbLniFoKrMucHRGYKNDkWUUgXvtwPY",
+        rpcpassword:"A48P82GYqD49G2f1UM1GUb9sKiC238cJjjhBfg4bhmJS",
     };
 
     const subscribeResponse=await fetch(`http://${multichainConfig.host}:${multichainConfig.port}`, {

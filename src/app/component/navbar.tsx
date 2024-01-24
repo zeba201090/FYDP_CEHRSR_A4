@@ -4,52 +4,64 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../api/auth/[...nextauth]/route'
 import { LoginButton, LogoutButton } from '../auth'
 import { User } from '../user'
+import  NotificationBell  from './notificationBell'
 
 
- async function Navbar() {
-  const session  = await getServerSession(authOptions)
-  const type = session?.user?.type || null
+async function Navbar() {
+  const session = await getServerSession(authOptions);
+  const userType = session?.user?.type || null;
+  const userId = session?.user?.id || null;
+
   return (
     <div>
       <header className="px-20 py-8 shadow-lg flex items-center justify-between">
         <div className="flex items-center space-x-2 ml-5">
           <ProjectLogo src="/logo CEHRSR.png" width={50} height={60} alt="project-logo" />
-          <h1 className="text-3xl"><a href="index.html">CEHRSR</a></h1>
+          <h1 className="text-3xl">
+            <a href="index.html">CEHRSR</a>
+          </h1>
         </div>
 
         <nav className="space-x-5 ml-auto mr-5">
           <ul className="flex space-x-5">
-            <li><a href="#banner">Home</a></li>
-            <li><a href="#ourServices">Our Services</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#contacts">Contacts</a></li>
+            <li>
+              <a href="#banner">Home</a>
+            </li>
+            <li>
+              <a href="#ourServices">Our Services</a>
+            </li>
+            <li>
+              <a href="#faq">FAQ</a>
+            </li>
+            <li>
+              <a href="#contacts">Contacts</a>
+            </li>
           </ul>
         </nav>
 
-        {session ? (
-          
-          // Render content for logged-in users
+        {userType === 'patient' && session ? (
+          // Render content for logged-in patients with notification bell
+          <>
+            <NotificationBell userId={userId} />
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+              <Link href={`/dashboard`}>Dashboard - {session?.user?.name}</Link>
+            </button>
+          </>
+        ) : userType !== 'patient' && session ? (
+          // Render content for logged-in users without notification bell
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-          
-          <Link href={`/dashboard`}>
-              Dashboard - {(session?.user?.name)}
-            </Link>
-          
-
+            <Link href={`/dashboard`}>Dashboard - {session?.user?.name}</Link>
           </button>
-          
         ) : (
           // Render the login/registration button for non-logged-in users
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
             <a href="/signin">Login / Registration</a>
           </button>
         )}
-        {!session ? null : ( <div> <LogoutButton/> </div>) }
+        {!session ? null : <div> <LogoutButton /> </div>}
       </header>
     </div>
   );
 }
 
 export default Navbar;
-
-  
