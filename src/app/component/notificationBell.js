@@ -45,7 +45,7 @@ const NotificationBell = ({ userId }) => {
 
   return (
     <div className="flex items-center w-18" onClick={handleBellClick}>
-  <Image src="/bell.png" alt="bell" width={40} height={36} /> 
+  <Image src="/bell.png" alt="bell" width={34} height={34} /> 
   
   {newNotificationCount > 0 && (
     <h1 className="notification-count bg-green-400 rounded-full px-2 mb-6 h-6 ">
