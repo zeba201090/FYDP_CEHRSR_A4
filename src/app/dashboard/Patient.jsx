@@ -89,7 +89,7 @@ export default function WelcomePatient() {
       </div>
       <div className="flex justify-center mt-12 items-center">
         <div className="health-suggestion text-center bg-brown-100  text-xl font-semibold animate-bounce ">
-          <p>"{shuffledMessages[0]}"</p>
+          <p>"{shuffledMessages[0]} "</p>
         </div>
       </div>
     </main>

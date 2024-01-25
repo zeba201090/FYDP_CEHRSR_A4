@@ -7,7 +7,7 @@ import Footer from './component/footer'
 
 
 export const metadata = {
-  title: 'CEHRSR',
+    title: 'CEHRSR',
   description: 'CEHRSR'
 }
 

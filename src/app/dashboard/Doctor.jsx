@@ -16,20 +16,35 @@ const WelcomeDoctor = () => {
   const [NID, setNID] = useState("");
   const [OTP, setOTP] = useState("");
   const [nid, setNid] = useState("");
+  const [shuffledMessages, setShuffledMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState(false);
   const [generatedOTP, setGeneratedOTP] = useState("");
+
+  const doctorMessages = [
+    '👩‍⚕️ Welcome, Doctor! Your dedication makes a difference.',
+    '🌟 Your care and compassion impact patients positively.',
+    '💻 Stay updated with the latest medical research and advancements.',
+    '👥 Effective communication builds trust with your patients.',
+    '📚 Continuously expand your medical knowledge for excellence.',
+    '🤝 Collaborate with your healthcare team for optimal patient care.',
+    '⏰ Prioritize self-care to ensure a healthy work-life balance.',
+    '💡 Embrace innovation to enhance the quality of healthcare services.',
+    '🌈 Your commitment to healing is appreciated every day!',
+  ];
   const router = useRouter();
   const { data: session, update } = useSession();
 
   useEffect(() => {
     console.log("Client Session", session?.user?.auth);
     setData(session?.user?.auth);
+
+    setShuffledMessages(shuffleArray(doctorMessages));
+
     if (typeof window !== "undefined") {
       const storedNid = localStorage.getItem("nid");
       if (storedNid) {
         setNid(storedNid);
-        
       }
     }
   }, [session]);
@@ -59,7 +74,14 @@ const WelcomeDoctor = () => {
       console.error("Error adding notification: ", error.message);
     }
   };
-  
+  const shuffleArray = (array) => {
+    const newArray = array.slice();
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  };
 
 
 const sendOtpToFirestore = async (otp, nid) => {
@@ -137,6 +159,7 @@ const sendOtpToFirestore = async (otp, nid) => {
         <h1 className="text-center font-bold text-green-500    text-6xl">
         Welcome Dr. {(session?.user?.name)}
         </h1>
+        
       </header>
       <div className="bg-white flex justify-center items-center h-auto border-m mt-10">
         <table>
@@ -150,6 +173,7 @@ const sendOtpToFirestore = async (otp, nid) => {
                   Enter Patient's NID
                 </label>
               </td>
+              
               <td className="text-md px-10 py-5 ">
                 <input
                   className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5  w-80 ease-linear transition-all duration-150"
@@ -230,13 +254,24 @@ const sendOtpToFirestore = async (otp, nid) => {
            New Diagnosis Reports 
        </button>
        </Link>
+      
    </div>
+
   
 
 
 
 
-     ) : null}
+     ) : <div className="flex justify-center  items-center md:mt-64 ">
+     <div className="health-suggestion text-center text-color:gray-400 font-style:italic text-xl font-semibold  ">
+       <p className="font-style:italic">{shuffledMessages[0]} </p>
+     </div>
+   </div>}
+   {data ? ( <div className="flex justify-center md:mt-26 items-center">
+        <div className="health-suggestion text-center   text-xl font-semibold animate-bounce ">
+          <p>{shuffledMessages[0]}</p>
+        </div>
+      </div>) : null}
 
     </div>
   );
