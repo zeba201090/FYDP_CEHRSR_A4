@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export async function POST(request) {
-    // const res = await request.json();
-    // console.log('res', res);
+    const res = await request.json();
+    console.log('res', res);
 
-    // const streamName = res.nid;
-    const streamName = '80272410';
+    const streamName = res.nid;
+    // const streamName = '80272410';
     console.log('streamName', streamName);
 
     const multichainConfig = {

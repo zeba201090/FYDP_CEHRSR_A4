@@ -130,9 +130,12 @@ const sendOtpToFirestore = async (otp, nid) => {
 
   return (
     <div className="">
+     {!session ? (<Loading/>) :
+      ( <>
       <header className="my-10">
-        <h1 className="text-center font-bold text-green-500  text-6xl">
-          Patient Information
+      
+        <h1 className="text-center font-bold text-green-500    text-6xl">
+        Welcome Dr. {(session?.user?.name)}
         </h1>
       </header>
       <div className="bg-white flex justify-center items-center h-auto border-m mt-10">
@@ -203,6 +206,7 @@ const sendOtpToFirestore = async (otp, nid) => {
           </tbody>
         </table>
       </div>
+      </>)}
 
       {loading ?  <Loading /> : null}
 
@@ -217,7 +221,7 @@ const sendOtpToFirestore = async (otp, nid) => {
             Patient's Previous Record
        </button>
        {/* </Link> */}
-       <Link href={`/MedicalRecordEntry`}>
+       <Link href={`/MedicalRecordEntry?nid=${nid}`}>
        <button
            className="flex flex-col items-center justify-center w-400 h-400 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200"
        >

@@ -6,15 +6,29 @@ import { db } from '../firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useSession } from 'next-auth/react';
 import {useRouter} from 'next/navigation';
+import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+
 
 const MedicalRecordEntry = () => {
   const { data: session } = useSession();
   const router = useRouter();
+  console.log("Session", session?.user?.auth);
+  
+
+  const params = useSearchParams();
+  const id = { nid: params.get('nid') };
+  
+  if (session?.user?.auth == false || id==null) {
+    router.push('/dashboard');
+}
+
   const [patient_name, setPatientName] = useState('');
   const [patient_birthyear, setPatientBirthyear] = useState('');
   const [patient_gender, setPatientGender] = useState('');
   const [patient_blood, setPatientBlood] = useState('');
-  const [nid, setNid] = useState('');
+  const nid = id.nid;
+  console.log(id);
   const [patientAge, setPatientAge] = useState('');
   const [symptoms, setSymptoms] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
@@ -29,10 +43,9 @@ const MedicalRecordEntry = () => {
   const [success, setSuccess] = useState(false);
   const docName = session?.user?.name;
 
-  
   const sendNotification = async (doc, nid) => {
     try {
-      const otpCollectionRef = collection(db, '80272410');
+      const otpCollectionRef = collection(db, nid);
   
       const data = {
         notification: `EHR permission revoked from Dr. ${doc}`,
@@ -45,29 +58,30 @@ const MedicalRecordEntry = () => {
     }
   };
 
-  const getNid = async (e) => {
-    e.preventDefault();
-    const id = { nid };
-      try {
-        const response = await fetch('/api/PatientInfo', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(id),
-        });  
-        if(!response.ok){
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        const name=data?.chain_response?.firstName+" "+data?.chain_response?.lastName
-        setLoading(true);
-        setPatientName(name);
-        setPatientBirthyear(data?.chain_response?.birthyear);
-        setPatientBlood(data?.chain_response?.blood);
-        setPatientGender(data?.chain_response?.gender);
-      } 
-      catch (error) {
-        console.error('Error fetching data:', error);
+  const getNid = async () => {
+    try {
+      const response = await fetch('/api/PatientInfo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nid }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      
+      const data = await response.json();
+      const name = data?.chain_response?.firstName + " " + data?.chain_response?.lastName;
+  
+      setLoading(true);
+      setPatientName(name);
+      setPatientBirthyear(data?.chain_response?.birthyear);
+      setPatientBlood(data?.chain_response?.blood);
+      setPatientGender(data?.chain_response?.gender);
+      console.log(data?.chain_response?.firstName);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
   
   const ehr_submit = async (e) => {
@@ -108,7 +122,6 @@ const MedicalRecordEntry = () => {
         setFindings('');
         setComments('');
       }
-      sendNotification(docName, nid);
 
     } 
     catch (error) {
@@ -116,27 +129,30 @@ const MedicalRecordEntry = () => {
     }
   };
   
-  const exit=async(e)=>{
-    const request=nid;
-    try{
-      const response = await fetch('/api/RemoveAccess',{
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(request),
+  const exit = async (e) => {
+    console.log("Exit");
+    console.log(id);
+    try {
+      const response = await fetch('/api/RemoveAccess', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({id}),
       });  
-      if(!response.ok){
-          throw new Error(`HTTP error! Status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
       session.user.auth = false
       sendNotification(docName, nid);
 
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-    
-    catch (error) {
-        console.error('Error fetching data:', error);
-    }
-  }
+  };
+
+  useEffect(() => {
+    getNid(); // Call getNid when the component mounts
+  }, []); // Empty dependency array ensures it only runs once when the component mounts
 
   return (
     <div>
@@ -149,10 +165,9 @@ const MedicalRecordEntry = () => {
           <input className="border-2 border-blue-300 border-x-2 rounded-lg w-1/2 h-8 p-5" 
           type="text" 
           placeholder="Patient ID" value={nid}
-          onChange = { (e)=> { setNid(e.target.value) }}
           required
           />
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4 rounded"
+          <button onClick={getNid} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4 rounded"
           >
           Search
           </button>
@@ -258,15 +273,15 @@ const MedicalRecordEntry = () => {
               />
               </div>
               <div> 
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4 rounded float-right">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4 mt-3 rounded float-right">
                     Submit 
                 </button>
             </div>
             </form>
-            {!success && (
-              <div className="p-4 bg-green-200 rounded-md w-4/5 ">
+            {success && (
+              <div className="p-4 bg-green-200 rounded-md w-4/5 py-4">
                 Record Successfully Saved.
-                <button onClick={exit} className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 mx-4 rounded float-right">
+                <button onClick={exit} className="bg-red-500 hover:bg-red-800 text-white font-bold  px-4 mx-4 mb-7 py-1 rounded float-right">
                     Exit 
                 </button>
               </div>

@@ -3,7 +3,9 @@ import axios from 'axios';
 
 export async function POST(request) {
     const res = await request.json();       
-    const streamName='80272410';
+    const streamName=res.id.nid;
+    console.log(streamName);
+   
 
     const multichainConfig = {
         host: process.env.HOST,
@@ -24,7 +26,7 @@ export async function POST(request) {
         }),
     });
     if (!subscribeResponse.ok) {
-        throw new Error(`HTTP error subscribing to stream! Status: ${subscribeResponse.status}`);
+        throw new Error(`HTTP error unsubscribing to stream! Status: ${subscribeResponse.status}`);
     }
     console.log("Unsubscribed to stream");
     return Response.json({ status: 200 });

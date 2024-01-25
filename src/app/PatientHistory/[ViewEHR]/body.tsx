@@ -9,8 +9,12 @@ import { useSession } from "next-auth/react";
 
 
 export default function EHRData(){
+    const router = useRouter();
     let { data: session } = useSession();
     console.log("Session", session?.user?.name);
+    if (!session) {
+        router.replace('/dashboard');
+      }
     const patient_name=session?.user?.name;
     const pdf=useRef();
     // const [loading,setLoading]=useState(false);
