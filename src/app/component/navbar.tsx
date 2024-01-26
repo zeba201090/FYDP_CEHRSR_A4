@@ -9,6 +9,7 @@ async function Navbar() {
   const session = await getServerSession(authOptions);
   const userType = session?.user?.type || null;
   const userId = session?.user?.id || null;
+
   console.log('hellloooo', userType);
 
   return (
@@ -39,33 +40,46 @@ async function Navbar() {
         </nav>
 
         {userType === 'Patient' && session ? (
-          // Render content for logged-in patients with notification bell
-          <div className="flex space-x-2 md:space-x-5">
-            <Link href={`/dashboard`}>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 md:py-3 md:px-4 rounded-full">
-                Dashboard - {session?.user?.name}
-              </button>
-            </Link>
-            <NotificationBell userId={session?.user?.id} />
-          </div>
-        ) : userType === 'Doctor' && session ? (
+        // Render content for logged-in patients with notification bell
+        <div className="flex space-x-2 md:space-x-5">
+          <Link href={`/dashboard`}>
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 md:py-3 md:px-4 rounded-full">
+              Dashboard - {session?.user?.name}
+            </button>
+          </Link>
+          <NotificationBell userId={session?.user?.id} />
+        </div>
+      ) : userType === 'Doctor' && session ? (
+        // Render content for logged-in doctors with hospital name
+        <div className="flex space-x-2 md:space-x-5">
           <Link href={`/dashboard`}>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 md:py-3 md:px-4 rounded-full">
               Dashboard - Dr. {session?.user?.name}
             </button>
           </Link>
-        ) : (
-          <div className="px-5 md:px-10">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 md:py-3 md:px-4 rounded-full">
-              <Link href="/signin">Login / Registration</Link>
-            </button>
-          </div>
-        )}
-        {!session ? null : (
-          <div className="mt-1.5 px-3 md:px-6">
-            <LogoutButton />
-          </div>
-        )}
+         
+        </div>
+      ) : userType === 'Hospital' && session ? (
+        // Check if the user type is "Hospital" and return session.user.name
+        <Link href={`/dashboard`}>
+        <button className="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 md:py-3 md:px-4 rounded-full">
+          Dashboard - Hospital {session?.user?.name}
+        </button>
+      </Link>
+      ) : (
+        // Render content for users who are not logged in
+        <div className="px-5 md:px-10">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 md:py-3 md:px-4 rounded-full">
+            <Link href="/signin">Login / Registration</Link>
+          </button>
+        </div>
+      )}
+      {!session ? null : (
+        // Render logout button for logged-in users
+        <div className="mt-1.5 px-3 md:px-6">
+          <LogoutButton />
+        </div>
+      )}
       </header>
     </div>
   );

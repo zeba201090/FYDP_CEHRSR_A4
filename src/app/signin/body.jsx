@@ -91,14 +91,15 @@ function LoginBody() {
               I am a Doctor
             </button>
           </div>
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          {/* <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Sign in to your account
-          </h2>
+          </h2> */}
         </div>
 
         {login ? (
           <div className="w-1/2 border-green-700 border-2 rounded-md mx-auto my-20">
-          <div className="flex items-center justify-center py-10 flex-col">
+            <h1 className="text-center font-extrabold text-green-700 my-6 text-2xl mx-auto">Sign In as Doctor</h1>
+          <div className="flex items-center justify-center py-5 flex-col">
             <form className="py-10 flex-col" onSubmit={submit}>
               <div className="mb-4">
                 <label htmlFor="national_id" className="text-sm text-black float-left w-32">
@@ -146,7 +147,8 @@ function LoginBody() {
         </div>
         ) : (
           <div className="w-1/2 border-blue-700 border-2 rounded-md mx-auto my-20">
-          <div className="flex items-center justify-center py-10 flex-col">
+          <h1 className="text-center font-extrabold text-blue-700  text-2xl  my-6 mx-auto">Sign In as Patient</h1>
+          <div className="flex items-center justify-center py-5 flex-col">
           <form className="py-10 flex-col" onSubmit={Psubmit}>
               <div className="mb-4">
                   <label htmlFor="national_id" className="text-sm text-black float-left w-32">National ID</label>
