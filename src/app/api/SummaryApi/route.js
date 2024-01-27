@@ -2,8 +2,24 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 
 export async function POST(request){
-    const res = await request.json();  
-    const ehr=res;     
-    console.log('res here', ehr);
-    return Response.json({ehr});
+    try {
+        const res = await request.json();  
+        var newData = res.map((item) => {
+            const { hospital, date, patientAge, doctorName, ...newItem } = item;
+            return newItem;
+        });
+        newData=JSON.stringify(newData);
+        const cstring = newData.replace(/["\[\]]/g, '');
+        const response = await axios.post('https://392b-34-106-148-243.ngrok-free.app/api/data', {
+            input_text: cstring,
+        });
+
+        const summary=response.data.summary;
+        console.log('Response from Flask API:', summary);
+        return NextResponse.json({summary},{status: 200});
+    } 
+    catch (error) {
+        console.error('Error processing request:', error.message);
+        return new Response({ body: 'Internal Server Error', status: 500 });
+    }
 }

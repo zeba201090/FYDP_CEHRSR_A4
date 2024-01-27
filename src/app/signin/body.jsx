@@ -134,15 +134,13 @@ function LoginBody() {
                 </button>
               </div>
             </form>
-            <a className="text-green-700" href="/registration">
-              Click here to sign up
-            </a>
+            
             <p>
               <a className="text-green-700" href="">
                 Forgot Password?
               </a>
             </p>
-            {error && <p>Error has occurred. Check credentials</p>}
+            {error && <p className="">Error has occurred. Check credentials</p>}
           </div>
         </div>
         ) : (

@@ -2,11 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export async function POST(request) {
     const res = await request.json();
-    console.log('res', res);
+    // console.log('res', res);
 
-    const streamName = res.nid;
-    // const streamName = '80272410';
-    console.log('streamName', streamName);
+    const streamName = res;
+   
 
     const multichainConfig = {
         host: process.env.HOST,

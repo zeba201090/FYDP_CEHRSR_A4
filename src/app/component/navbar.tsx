@@ -25,16 +25,16 @@ async function Navbar() {
         <nav className="hidden md:flex space-x-5 ml-auto mr-5">
           <ul className="flex space-x-5">
             <li>
-              <a href="#banner">Home</a>
+              <a href="/">Home</a>
             </li>
             <li>
-              <a href="#ourServices">Our Services</a>
+              <a href="/#ourServices">Our Services</a>
             </li>
             <li>
-              <a href="#faq">FAQ</a>
+              <a href="/#faq">FAQ</a>
             </li>
             <li>
-              <a href="#contacts">Contacts</a>
+              <a href="/#contacts">Contacts</a>
             </li>
           </ul>
         </nav>

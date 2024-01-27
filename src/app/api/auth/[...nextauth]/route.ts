@@ -133,7 +133,7 @@ CredentialsProvider({
           id: token.id,
           type: token.type,
           randomKey: token.randomKey,
-          auth: null
+          auth: false
         }
       }
     },
@@ -144,7 +144,7 @@ CredentialsProvider({
           ...token,
           id: u.id,
           type: u.type,
-          auth: null,
+          auth: false,
           
         }
       }

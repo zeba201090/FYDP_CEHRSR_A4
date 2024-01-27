@@ -15,6 +15,7 @@
     "broadcast-channel": "^7.0.0",
     "firebase": "^10.7.2",
     "jose": "^5.2.0",
+    "jspdf-html2canvas": "^1.5.1",
     "next": "^14.1.0",
     "next-auth": "^4.24.5",
     "openai": "^4.24.7",

@@ -13,9 +13,28 @@ export default function ConsultationHistory() {
   }
   const id = { nid: session?.user?.id };
   const [loading, setLoading] = useState(true);
+  const [sumdata, setSumData] = useState([]);
+
   const [consultations, setConsultations] = useState([]);
   
-
+  const summary=async(e)=>{
+    try{
+      const response = await fetch('/api/SummaryApi',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sumdata),
+      });  
+      if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('summary::',data.summary);
+        router.push(`/Summary?id=${id.nid}&summary=${data.summary}`);
+    }
+    catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
   const EHRInfo = async (e) => {
     try {
       const response = await fetch('/api/EHRFetch', {
@@ -32,6 +51,9 @@ export default function ConsultationHistory() {
         console.log(item.data.json);
         return item.data.json;
       });
+      
+      setSumData(consultation_date);
+
       if (consultation_date && consultation_date.length > 0) {
         const consultationsData = consultation_date.map((consultation) => ({
           date: consultation.date,
@@ -98,8 +120,10 @@ export default function ConsultationHistory() {
               Back to Previous Page
             </button>
           </Link>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">Summarized Report</button>
-        </div>
+          <button onClick={summary} className="bg-blue-500 text-white px-4 py-2 rounded">
+                    Summarized Report
+                </button>        
+                </div>
       </main>
     </Suspense>
   );

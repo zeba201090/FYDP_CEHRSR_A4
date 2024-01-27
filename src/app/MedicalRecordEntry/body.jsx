@@ -20,6 +20,7 @@ const MedicalRecordEntry = () => {
   const id = { nid: params.get('nid') };
   
   if (session?.user?.auth == false || id==null) {
+    exit();
     router.push('/dashboard');
 }
 
@@ -89,6 +90,7 @@ const MedicalRecordEntry = () => {
     const data = {
       patient_id: nid,
       doctorName: docName,
+      patient_name,
       patientAge,
       symptoms,
       diagnosis,
@@ -144,6 +146,7 @@ const MedicalRecordEntry = () => {
       const data = await response.json();
       session.user.auth = false
       sendNotification(docName, nid);
+      router.replace('/dashboard');
 
     } catch (error) {
       console.error('Error fetching data:', error);

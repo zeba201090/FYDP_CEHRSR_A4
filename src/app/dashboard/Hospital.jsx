@@ -24,7 +24,7 @@ export default function WelcomeDoctor() {
           Welcome Hospital : {session?.user?.name}
         </h1>
         <div className="flex items-center justify-center">
-        
+        <Link href={`/Appointment`}> 
           <button className="flex flex-col items-center justify-center w-400 h-400 border border-cyan-600 text-cyan font-bold px-20 py-10 m-10 rounded-md hover:bg-cyan-200">
             <Image
               src="/consulting.png"
@@ -35,6 +35,7 @@ export default function WelcomeDoctor() {
             />
             Doctor Appointment
           </button>
+          </Link>
 
           <Link href={`/Hospital/AffiliatedDoctors`}>
           <button className="flex flex-col items-center justify-center w-400 h-400 border border-cyan-600 text-cyan font-bold px-20 py-10 m-10 rounded-md hover:bg-cyan-200">

@@ -7,8 +7,8 @@ export async function POST(request) {
     const form_nid = req.nid;
     const streamName = form_nid;
     
-    //  console.log(req);
-    //  console.log('streamName', streamName);
+      console.log(req);
+      console.log('streamName', streamName);
 
     const multichainConfig = {
       host: process.env.HOST,

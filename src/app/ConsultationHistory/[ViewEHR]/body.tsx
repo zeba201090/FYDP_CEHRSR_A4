@@ -8,22 +8,69 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from "next-auth/react";
 
 
+import { doc } from 'firebase/firestore';
+
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
 export default function EHRData(){
     const router = useRouter();
     let { data: session } = useSession();
-    if(session?.user?.auth==false){
-        router.replace('/dashboard');
-    }
-    console.log("Session", session?.user?.name);
-    console.log("Session", session?.user?.auth);
+    const docName=session?.user?.name;
     
-    
+   
+    const params = useSearchParams();
+    const id = params.get('id');
+    const key = params.get('key');
 
-    const patient_name=session?.user?.name;
+    const sendNotification = async (doc, nid) => {
+        try {
+          const otpCollectionRef = collection(db, nid);
+      
+          const data = {
+            notification: `EHR permission revoked from Dr. ${doc}`,
+            timestamp: serverTimestamp(),
+          };
+      
+          await addDoc(otpCollectionRef, data);
+        } catch (error) {
+          console.error("Error adding notification: ", error.message);
+        }
+      };
+    const exit = async (e) => {
+        console.log("Exit");
+        console.log(id);
+        try {
+          const response = await fetch('/api/RemoveAccess', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({id}),
+          });  
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          session.user.auth = false
+          sendNotification(docName, id);
+
+          router.replace('/dashboard');
+    
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+
+    if(session?.user?.auth==false){
+        exit();
+        
+    }
+    
+    
+    
     const pdf=useRef();
     // const [loading,setLoading]=useState(false);
     const [date, setDate] = useState('');
     const [age, setAge] = useState('');
+    const [patient_name, setPatientName] = useState('Musarrat Zeba');
     const [doctor_name, setDoctorName] = useState('');
     const [hospital_name, setHospitalName] = useState('');
     const [symptoms, setSymptoms] = useState('');
@@ -36,9 +83,7 @@ export default function EHRData(){
     const [findings, setFindings] = useState('');
     const [comments, setComments] = useState('');
 
-    const params = useSearchParams();
-    const id = params.get('id');
-    const key = params.get('key');
+    
 
     const view_ehr=async(e:any)=>{
         const request={id,key};
@@ -56,6 +101,7 @@ export default function EHRData(){
             // setLoading(true);
             setDate(data?.chain_response?.date);
             setDoctorName(data?.chain_response?.doctorName);
+            setPatientName(data?.chain_response?.patient_name);
             setHospitalName(data?.chain_response?.hospital);
             setDiagnosis(data?.chain_response?.diagnosis);
             setSubDiagnosis(data?.chain_response?.subdiagnosis);
