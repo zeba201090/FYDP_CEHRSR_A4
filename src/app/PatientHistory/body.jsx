@@ -50,7 +50,7 @@ export default function ConsultationHistory() {
       const consultation_date = ehr.map((item) => {
         console.log(item.data.json);
         return item.data.json;
-      });
+      }).reverse();
       
       setSumData(consultation_date);
 
@@ -59,7 +59,7 @@ export default function ConsultationHistory() {
           date: consultation.date,
           hospital: consultation.hospital,
           doctor: consultation.doctorName,
-        }));
+        })).reverse();
         setConsultations(consultationsData);
       }
     } catch (error) {
@@ -114,7 +114,7 @@ export default function ConsultationHistory() {
       </div>
       
         )}
-        <div className="flex mt-4">
+        <div className="flex mt-4 py-5">
           <Link href={'/dashboard'}>
             <button className="bg-blue-500 text-white px-4 py-2 mr-10 rounded">
               Back to Previous Page

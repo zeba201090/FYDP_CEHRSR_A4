@@ -21,7 +21,7 @@ export default function WelcomeDoctor() {
     <>
       <main className="flex flex-col justify-center items-center mt-8 mb-60">
         <h1 className="text-3xl font-bold text-center border-b-4 border-cyan-800 mt-20 mb-5">
-          Welcome Hospital : {session?.user?.name}
+          Welcome : {session?.user?.name}
         </h1>
         <div className="flex items-center justify-center">
         <Link href={`/Appointment`}> 

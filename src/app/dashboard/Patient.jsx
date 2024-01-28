@@ -4,11 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import NotificationBell from "../component/notificationBell";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from 'react';
 import Loading from "../loading";
 
 export default function WelcomePatient() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const id =  session?.user?.id;
+
   const [shuffledMessages, setShuffledMessages] = useState([]);
   const [shuffled, setShuffled] = useState(false);
 
@@ -33,6 +37,28 @@ export default function WelcomePatient() {
     }
     return newArray;
   };
+  const [sumdata, setSumData] = useState([]);
+
+  const [consultations, setConsultations] = useState([]);
+  
+  const summary=async(e)=>{
+    try{
+      const response = await fetch('/api/SummaryApi',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sumdata),
+      });  
+      if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('summary::',data.summary);
+        router.push(`/Summary?id=${id}&summary=${data.summary}`);
+    }
+    catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
 
   useEffect(() => {
     if (!shuffled) {
@@ -64,7 +90,7 @@ export default function WelcomePatient() {
             Consultation History{" "}
           </button>
         </Link>
-        <button className="flex flex-col items-center justify-center w-400 h-400 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200">
+        <button onClick={summary} className="flex flex-col items-center justify-center w-400 h-400 border border-blue-600 text-blue font-bold px-20 py-10 m-10 rounded-md hover:bg-blue-200">
           <Image
             src="/diagnostic.png"
             alt="diagnosis"

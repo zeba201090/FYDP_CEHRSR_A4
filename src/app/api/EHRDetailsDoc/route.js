@@ -14,7 +14,7 @@ export async function POST(request) {
       host: process.env.HOST,
       port: 10254,
       rpcuser: process.env.RPCUSER,
-      rpcpassword: 'A48P82GYqD49G2f1UM1GUb9sKiC238cJjjhBfg4bhmJS',
+      rpcpassword: '7ZqnLSM4SEFCWTBhGoKgTmaPqg86CHRmEeym8sgRbjno',
     };
 
     // Fetch data from Multichain

@@ -10,7 +10,7 @@ export async function POST(request){
         });
         newData=JSON.stringify(newData);
         const cstring = newData.replace(/["\[\]]/g, '');
-        const response = await axios.post('https://392b-34-106-148-243.ngrok-free.app/api/data', {
+        const response = await axios.post('https://91d4-34-141-128-24.ngrok-free.app/api/data', {
             input_text: cstring,
         });
 

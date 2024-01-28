@@ -18,7 +18,42 @@ const MedicalRecordEntry = () => {
 
   const params = useSearchParams();
   const id = { nid: params.get('nid') };
+  const exit = async (e) => {
+    console.log("Exit");
+    console.log(id);
+    try {
+      const response = await fetch('/api/RemoveAccess', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({id}),
+      });  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      session.user.auth = false
+      sendNotification(docName, nid);
+      router.replace('/dashboard');
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  const sendNotification = async (doc, nid) => {
+    try {
+      const otpCollectionRef = collection(db, nid);
   
+      const data = {
+        notification: `EHR permission revoked from Dr. ${doc}`,
+        timestamp: serverTimestamp(),
+      };
+  
+      await addDoc(otpCollectionRef, data);
+    } catch (error) {
+      console.error("Error adding notification: ", error.message);
+    }
+  };
+
   if (session?.user?.auth == false || id==null) {
     exit();
     router.push('/dashboard');
@@ -43,22 +78,7 @@ const MedicalRecordEntry = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const docName = session?.user?.name;
-
-  const sendNotification = async (doc, nid) => {
-    try {
-      const otpCollectionRef = collection(db, nid);
-  
-      const data = {
-        notification: `EHR permission revoked from Dr. ${doc}`,
-        timestamp: serverTimestamp(),
-      };
-  
-      await addDoc(otpCollectionRef, data);
-    } catch (error) {
-      console.error("Error adding notification: ", error.message);
-    }
-  };
-
+ 
   const getNid = async () => {
     try {
       const response = await fetch('/api/PatientInfo', {
@@ -76,9 +96,9 @@ const MedicalRecordEntry = () => {
   
       setLoading(true);
       setPatientName(name);
-      setPatientBirthyear(data?.chain_response?.birthyear);
-      setPatientBlood(data?.chain_response?.blood);
-      setPatientGender(data?.chain_response?.gender);
+      setPatientBirthyear('12/12/2000');
+      setPatientBlood('O+');
+      setPatientGender('Female');
       console.log(data?.chain_response?.firstName);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -131,27 +151,7 @@ const MedicalRecordEntry = () => {
     }
   };
   
-  const exit = async (e) => {
-    console.log("Exit");
-    console.log(id);
-    try {
-      const response = await fetch('/api/RemoveAccess', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id}),
-      });  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      session.user.auth = false
-      sendNotification(docName, nid);
-      router.replace('/dashboard');
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+ 
 
   useEffect(() => {
     getNid(); // Call getNid when the component mounts
@@ -181,10 +181,10 @@ const MedicalRecordEntry = () => {
           <div className="bg-blue-100 float-left w-1/4 py-3 px-4 rounded-md ">
             <label className="text-l font-bold text-blue-900 my-7 ">Patient General Info</label>
               {loading &&(<div className='py-3'>
-                <p className='py-1 md:text-s'>Patient Name: {patient_name}</p>
-                <p className='py-1 md:text-s'>Patient Birthyear: {patient_birthyear}</p>
-                <p className='py-1 md:text-s'>Patient Gender: {patient_gender}</p>
-                <p className='py-1 md:text-s'>Patient Blood Group: {patient_blood}</p>
+                <p className='py-1 font-semibold md:text-s'>Patient Name: {patient_name}</p>
+                <p className='py-1 font-semibold md:text-s'>Patient Birthyear: {patient_birthyear}</p>
+                <p className='py-1 font-semibold md:text-s'>Patient Gender: {patient_gender}</p>
+                <p className='py-1 font-semibold md:text-s'>Patient Blood Group: {patient_blood}</p>
               </div>)}
           </div>
 

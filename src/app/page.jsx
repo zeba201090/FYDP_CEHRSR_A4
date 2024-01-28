@@ -20,7 +20,7 @@ console.log(session);
   return (
     <div className='shadow-m'>
         
-        <section id='banner' style={{ backgroundImage: 'url("hero-bg.png")', height:'600px' }} className="align-items-center shadow-md relative bg-cover pt-40 pl-20">
+        <section id='banner' style={{ backgroundImage: 'url("hero-bg.png")', height:'600px' }} className="align-items-center shadow-md relative bg-cover  pt-40 pl-20">
   <div className='container'>
     <h1 className='m-0 text-5xl font-bold uppercase text-blue-900'>Welcome to CEHRSR</h1>
     <h2 className=' mt-5 text-blue-900 text-2xl'>Find all your medical reports just in a few clicks</h2>

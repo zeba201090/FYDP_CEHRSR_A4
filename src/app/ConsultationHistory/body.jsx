@@ -85,7 +85,7 @@ export default function ConsultationHistory() {
             const consultation_date = ehr.map((item) => {
                 console.log(item.data.json);
                 return (item.data.json);
-            });
+            }).reverse();
             setSumData(consultation_date);
 
             if (consultation_date && consultation_date.length > 0) {

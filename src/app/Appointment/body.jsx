@@ -1,55 +1,54 @@
-"use client";
-import React from "react";
-
+"use client"
+import React, { useState } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
-
-import { useState } from "react";
-
 const Main = () => {
+  const [isAppointClicked, setIsAppointClicked] = useState(false);
 
-    const [isAppointClicked, setIsAppointClicked] = useState(false);
-
-    const handleAppointClick = () => {
-        setIsAppointClicked(true);
+  const handleAppointClick = () => {
+    setIsAppointClicked(true);
   };
-  const handleDownloadPdf = () => {
+
+  const handleDownloadPdf = async () => {
     const element = document.getElementById('document');
-
-    html2canvas(element).then((canvas) => {
-      const pdf=new jsPDF('p','mm','a4',true);
-            // const width=pdf.internal.pageSize.getWidth();
-            // const height=pdf.internal.pageSize.getHeight();
-      const imgData = canvas.toDataURL('image/png');
-      // const pdf = new jsPDF();
-      pdf.addImage(imgData, 'PNG', 0, 0);
-      pdf.save('Appointment.pdf');
-    });
-  };
   
-  const handleDownloadTicket = () => {
-    const ticketUrl = 'http://localhost:3000/Hospital/Appointment'; // Replace with the actual URL of the ticket
-    const anchor = document.createElement('a');
-    anchor.href = ticketUrl;
-    anchor.download = 'Appointment.pdf'; // Replace with the desired file name
-    anchor.click();
-  };
-
-
-
-    return(
-        <main id="document">
-            <h1 className="text-3xl font-bold text-center border-b-4 border-blue-700 mt-20 mb-5 w-3/12 mx-auto">Book Doctor's Appointment
-            </h1>
-            
-            
-            
-
-
-<div>
+    // Dimensions of A4 page in millimeters
+    const a4Width = 210;
+    const a4Height = 297;
+  
+    // Get the width and height of the element
+    const width = 1000;
+    const height = 800;
+  
+  
+    try {
+      const canvas = await html2canvas(element, { scale: 1 });
+  
+      const a4Width = 300;
+      const a4Height = 297;
       
-        <div  className="mx-auto flex flex-wrap mt-10 w-2/3">
+      // Create a PDF with wider dimensions
+      const pdf = new jsPDF('p', 'mm', [a4Width, a4Height]);
+      
+      // Add the captured image to the PDF
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, a4Width, a4Height);
+      
+      // Save the PDF
+      pdf.save('Appointment.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+  return (
+    <main >
+      <h1 className="text-3xl font-bold text-center border-b-4 border-blue-700 mt-20 mb-5 w-3/12 mx-auto">
+        Book Doctor's Appointment
+      </h1>
+
+      <div className="py-6">
+        <div className="mx-auto flex flex-wrap mt-10 w-2/3 bg-slate-200 rounded-sm h-3/4 p-8">
+          
           <div className="w-full lg:w-6/12 px-4">
                                 <div className="relative w-full mb-3">
                                 <label className="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password">
@@ -84,7 +83,7 @@ const Main = () => {
                             </div>
           <div className="text-center justify-between mx-auto">
             <button
-              className="bg-blue-500 text-white active:bg-blue-600 font-bold text-lg px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+              className="bg-blue-500 text-white active:bg-blue-600 font-bold text-lg px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mt-4 mr-1 ease-linear transition-all duration-150"
               type="button"
               onClick={handleAppointClick}
             >
@@ -92,26 +91,35 @@ const Main = () => {
             </button>
           </div>
         </div>
-      
-      {isAppointClicked && (
-        <div>
-          
-          <div className="mt-20 w-6/12 mx-auto">
-            <div className="text-center flex justify-between">
-              <h6 className="text-blueGray-700 text-2xl font-bold">
-                Serial Number #123456
-              </h6>
-              <button className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-md px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150" type="button" onClick={handleDownloadPdf}>
-                Download Ticket
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
 
-</main>
-    );
-}
+        {isAppointClicked && (
+          <>
+          <div  className="w-1/2 mx-auto mt-16 p-8 border border-gray-300 rounded-lg bg-white">
+            <div id="document">
+          <h1 className="text-3xl font-bold text-center border-b-4 border-blue-700 mb-5">Appointment Ticket</h1>
+          <div className="text-center">
+            <h2 className="text-lg font-semibold mb-2">PATIENT : MUSARRAT ZEBA</h2>
+            <h2 className="text-lg font-semibold mb-2">DOCTOR: DR. AFSARA YEASMIN </h2>
+            <h6 className="text-blueGray-700 text-2xl font-bold mb-4">Serial Number #83456</h6>
+            <h6 className="text-blueGray-700 text-2xl font-bold mb-4">Date and Time: 12/12/2021 12:00 PM - 12:30 PM (30 min)</h6>
+        </div>
+        <button
+        className="bg-blue-500 text-white active:bg-blue-600 mt-10 font-bold uppercase text-md px-4 py-2 rounded w-1/2  shadow hover:shadow-md outline-none focus:outline-none ease-linear  ml-44 transition-all duration-150"
+        type="button"
+        onClick={handleDownloadPdf}
+      >
+        Download Ticket
+      </button>
+          </div>
+
+        
+       
+      </div>
+        </>
+        )}
+      </div>
+    </main>
+  );
+};
 
 export default Main;
